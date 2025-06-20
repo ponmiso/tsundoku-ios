@@ -16,6 +16,12 @@ Tsundoku App for iOS
 
 ## Install
 
-```
+```bash
 $ mint bootstrap
+```
+
+## Environment
+
+```bash
+$ git config --local core.hooksPath .githooks
 ```

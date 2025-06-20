@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# 変更されたSwiftファイルを取得(1行で空白区切り）
+changedPaths=$(git status -s . | awk '
+    /^D/ {next} 
+    !/\.swift$/ {next}
+    /^R|^C/ {print $4; next}
+    {print $2}
+    ' | xargs -n1)
+
+if xcrun --find swift-format >/dev/null && [ -n "$changedPaths" ]; then
+  xcrun swift-format format --in-place $changedPaths
+else
+  echo "⚠️ swift-format が見つかりませんでした。"
+  exit 0
+fi
+
+if ! git diff --quiet -- '*.swift'; then
+  echo ""
+  echo "✨ swift-format によりファイルが修正されました。"
+  echo "変更を確認し、もう一度コミットしてください。"
+  echo ""
+  echo "🔍 修正されたファイル:"
+  git diff --stat
+  exit 1
+fi
+
+
