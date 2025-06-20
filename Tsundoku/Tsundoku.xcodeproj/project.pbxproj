@@ -99,6 +99,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 45D37C782D7FEE46009FD80D /* Build configuration list for PBXNativeTarget "Tsundoku" */;
 			buildPhases = (
+				84C0712D2E05A564003416C9 /* Run Script(Swift Lint) */,
 				45D37C4E2D7FEE42009FD80D /* Sources */,
 				45D37C4F2D7FEE42009FD80D /* Frameworks */,
 				45D37C502D7FEE42009FD80D /* Resources */,
@@ -230,6 +231,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		84C0712D2E05A564003416C9 /* Run Script(Swift Lint) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script(Swift Lint)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which mint >/dev/null; then\n  mint run swiftlint swiftlint\nelse\n  echo \"warning: Mint not installed, download from https://github.com/yonaskolb/Mint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		45D37C4E2D7FEE42009FD80D /* Sources */ = {
@@ -398,6 +420,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tsundoku/Preview Content\"";
 				DEVELOPMENT_TEAM = T43Y2W272F;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -427,6 +450,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tsundoku/Preview Content\"";
 				DEVELOPMENT_TEAM = T43Y2W272F;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
