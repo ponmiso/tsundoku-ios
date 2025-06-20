@@ -1,0 +1,25 @@
+# デフォルト有効で無効にするルール
+#disabled_rules:
+
+# デフォルト無効で有効にするルール
+#opt_in_rules:
+
+# 対象のファイル・フォルダ
+# デフォルトからフォルダ名を変更していない場合、プロジェクト名と同名のフォルダを指定すればいい
+included:
+  - Tsundoku
+
+# 対象外のファイル・フォルダ
+excluded:
+  - SupportFiles
+  - TsundokuTests
+  - TsundokuUITests
+
+custom_rules:
+  enum_lower_case:
+    name: 'Enum Lower Case'
+    regex: '\bcase\s+([A-Z][a-zA-Z0-9]*)\b'
+    capture_group: 1
+    message: 'The enum case should be lower camel case'
+    severity: warning
+

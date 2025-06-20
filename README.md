@@ -1,8 +1,21 @@
 # tsundoku-ios
+
 Tsundoku App for iOS
 
-## Feature
+# Feature
 
 - Manage my Tsundoku list.
 - Manage my read books.
 - Manage my wishlist of books.
+
+# Setup
+
+## Requirement
+
+- Mint
+
+## Install
+
+```
+$ mint bootstrap
+```
