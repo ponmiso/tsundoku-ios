@@ -1,0 +1,13 @@
+name: Feature
+description: Add Feature
+labels: ["feature"]
+body:
+  - type: input
+    id: issue
+    attributes:
+      label: Issue
+      description: Input issue number.
+      placeholder: ex. "close #100"
+      value: "close #"
+    validations:
+      required: true
