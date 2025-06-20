@@ -1,9 +1,15 @@
 #!/bin/bash
 
-TARGET_DIR=$(git rev-parse --show-toplevel)
+# 変更されたSwiftファイルを取得(1行で空白区切り）
+changedPaths=$(git status -s . | awk '
+    /^D/ {next} 
+    !/\.swift$/ {next}
+    /^R|^C/ {print $4; next}
+    {print $2}
+    ' | xargs -n1)
 
-if xcrun --find swift-format >/dev/null; then
-  xcrun swift-format format --in-place --recursive "$TARGET_DIR"
+if xcrun --find swift-format >/dev/null && [ -n "$changedPaths" ]; then
+  xcrun swift-format format --in-place $changedPaths
 else
   echo "⚠️ swift-format が見つかりませんでした。"
   exit 0
