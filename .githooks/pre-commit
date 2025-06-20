@@ -1,0 +1,22 @@
+#!/bin/bash
+
+TARGET_DIR=$(git rev-parse --show-toplevel)
+
+if xcrun --find swift-format >/dev/null; then
+  xcrun swift-format format --in-place --recursive "$TARGET_DIR"
+else
+  echo "⚠️ swift-format が見つかりませんでした。"
+  exit 0
+fi
+
+if ! git diff --quiet -- '*.swift'; then
+  echo ""
+  echo "✨ swift-format によりファイルが修正されました。"
+  echo "変更を確認し、もう一度コミットしてください。"
+  echo ""
+  echo "🔍 修正されたファイル:"
+  git diff --stat
+  exit 1
+fi
+
+
