@@ -9,11 +9,7 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(books) { book in
-                    NavigationLink {
-                        Text(book.title)
-                    } label: {
-                        bookView(book)
-                    }
+                    bookView(book)
                 }
                 .onDelete(perform: deleteBooks)
             }
@@ -33,13 +29,17 @@ struct ContentView: View {
 
 extension ContentView {
     private func bookView(_ book: Book) -> some View {
-        HStack {
+        NavigationLink {
             Text(book.title)
-                .font(.body)
-                .lineLimit(1)
-            Spacer()
-            Text(book.isRead ? "Read" : "Not Read")
-                .font(.caption)
+        } label: {
+            HStack {
+                Text(book.title)
+                    .font(.body)
+                    .lineLimit(1)
+                Spacer()
+                Text(book.isRead ? "Read" : "Not Read")
+                    .font(.caption)
+            }
         }
     }
 }
