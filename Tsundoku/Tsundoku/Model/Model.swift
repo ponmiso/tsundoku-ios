@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Book {
+final class Book {
     /// タイトル
     var title: String
     /// 既読か
@@ -10,7 +10,7 @@ class Book {
     /// アプリでの登録日
     var created: Date
 
-    init(title: String, isRead: Bool, created: Date = .now) {
+    init(title: String, isRead: Bool = false, created: Date = .now) {
         self.title = title
         self.isRead = isRead
         self.created = created
