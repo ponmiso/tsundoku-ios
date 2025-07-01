@@ -29,7 +29,9 @@ struct ContentView: View {
             }
         }
     }
+}
 
+extension ContentView {
     private func addBook() {
         withAnimation {
             let newBook = Book(title: "xxx")
