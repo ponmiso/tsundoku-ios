@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var books: [Book]
+    @State private var isPresentedBookAddView = false
 
     var body: some View {
         NavigationStack {
@@ -23,6 +24,9 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $isPresentedBookAddView) {
+            BookAddView()
         }
     }
 }
@@ -46,10 +50,7 @@ extension ContentView {
 
 extension ContentView {
     private func addBook() {
-        withAnimation {
-            let newBook = Book(title: "xxx")
-            modelContext.insert(newBook)
-        }
+        isPresentedBookAddView = true
     }
 
     private func deleteBooks(offsets: IndexSet) {
