@@ -8,11 +8,11 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(books) { item in
+                ForEach(books) { book in
                     NavigationLink {
-                        Text(item.title)
+                        Text(book.title)
                     } label: {
-                        Text(item.title)
+                        bookView(book)
                     }
                 }
                 .onDelete(perform: deleteBooks)
@@ -27,6 +27,19 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+extension ContentView {
+    private func bookView(_ book: Book) -> some View {
+        HStack {
+            Text(book.title)
+                .font(.body)
+                .lineLimit(1)
+            Spacer()
+            Text(book.isRead ? "Read" : "Not Read")
+                .font(.caption)
         }
     }
 }
@@ -49,6 +62,18 @@ extension ContentView {
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Book.self, inMemory: true)
+    do {
+        // モック用の設定（inMemory: trueでオンメモリDB）
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Book.self, configurations: config)
+
+        // モックデータ追加
+        let context = container.mainContext
+        context.insert(Book(title: "xxx"))
+
+        // コンテナを環境に渡す
+        return ContentView().modelContainer(container)
+    } catch {
+        return Text("プレビュー生成エラー: \(error.localizedDescription)")
+    }
 }
