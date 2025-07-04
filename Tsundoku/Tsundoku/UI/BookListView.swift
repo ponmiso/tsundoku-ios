@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-struct ContentView: View {
+struct BookListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var books: [Book]
     @State private var isPresentedBookAddView = false
@@ -31,7 +31,7 @@ struct ContentView: View {
     }
 }
 
-extension ContentView {
+extension BookListView {
     private func bookView(_ book: Book) -> some View {
         NavigationLink {
             Text(book.title)
@@ -48,7 +48,7 @@ extension ContentView {
     }
 }
 
-extension ContentView {
+extension BookListView {
     private func addBook() {
         isPresentedBookAddView = true
     }
@@ -73,7 +73,7 @@ extension ContentView {
         context.insert(Book(title: "xxx"))
 
         // コンテナを環境に渡す
-        return ContentView().modelContainer(container)
+        return BookListView().modelContainer(container)
     } catch {
         return Text("プレビュー生成エラー: \(error.localizedDescription)")
     }
