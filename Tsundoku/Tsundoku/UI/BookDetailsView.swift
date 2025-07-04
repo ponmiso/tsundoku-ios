@@ -51,6 +51,11 @@ struct BookDetailsView: View {
                 }
                 Text("Progress: \(progressText)")
                     .frame(maxWidth: .infinity, alignment: .trailing)
+                if isOverPage {
+                    Text("Do not exceed the maximum number of pages")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
                 Spacer()
             }
             .padding()
@@ -96,11 +101,18 @@ extension BookDetailsView {
     }
 
     private var progressText: String {
-        if let progress {
+        if let progress, !isOverPage {
             "\(Int(progress * 100)) %"
         } else {
             "---"
         }
+    }
+
+    private var isOverPage: Bool {
+        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
+            return false
+        }
+        return currentPage > maxPage
     }
 }
 
