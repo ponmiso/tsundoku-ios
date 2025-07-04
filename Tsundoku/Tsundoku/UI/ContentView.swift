@@ -3,52 +3,78 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var books: [Book]
+    @State private var isPresentedBookAddView = false
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+                ForEach(books) { book in
+                    bookView(book)
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteBooks)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button(action: addBook) {
+                        Label("Add Book", systemImage: "plus")
                     }
                 }
             }
-        } detail: {
-            Text("Select an item")
+        }
+        .sheet(isPresented: $isPresentedBookAddView) {
+            BookAddView()
         }
     }
+}
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+extension ContentView {
+    private func bookView(_ book: Book) -> some View {
+        NavigationLink {
+            Text(book.title)
+        } label: {
+            HStack {
+                Text(book.title)
+                    .font(.body)
+                    .lineLimit(1)
+                Spacer()
+                Text(book.isRead ? "Read" : "Not Read")
+                    .font(.caption)
+            }
         }
     }
+}
 
-    private func deleteItems(offsets: IndexSet) {
+extension ContentView {
+    private func addBook() {
+        isPresentedBookAddView = true
+    }
+
+    private func deleteBooks(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                modelContext.delete(books[index])
             }
         }
     }
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+    do {
+        // モック用の設定（inMemory: trueでオンメモリDB）
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Book.self, configurations: config)
+
+        // モックデータ追加
+        let context = container.mainContext
+        context.insert(Book(title: "xxx"))
+
+        // コンテナを環境に渡す
+        return ContentView().modelContainer(container)
+    } catch {
+        return Text("プレビュー生成エラー: \(error.localizedDescription)")
+    }
 }
