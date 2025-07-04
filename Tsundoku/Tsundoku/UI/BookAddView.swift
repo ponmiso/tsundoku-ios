@@ -6,6 +6,7 @@ struct BookAddView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var title = ""
+    @State private var didInputedTitle = false
 
     var body: some View {
         NavigationStack {
@@ -13,12 +14,18 @@ struct BookAddView: View {
                 Text("Title")
                 TextField("", text: $title)
                     .textFieldStyle(.roundedBorder)
+                if title.isEmpty, didInputedTitle {
+                    Text("Please enter a title")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
                 Spacer()
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
+                        if title.isEmpty { return }
                         addBook(title: title)
                         dismiss()
                     }
@@ -29,6 +36,9 @@ struct BookAddView: View {
                     }
                 }
             }
+        }
+        .onChange(of: title) {
+            didInputedTitle = true
         }
     }
 }
