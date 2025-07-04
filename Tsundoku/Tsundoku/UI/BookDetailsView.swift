@@ -9,6 +9,8 @@ struct BookDetailsView: View {
 
     @State private var title: String
     @State private var isRead: Bool
+    @State private var currentPage: String
+    @State private var maxPage: String
 
     @State private var isPresentedAlert = false
     @State private var updateAlertDetails: UpdateAlertDetails?
@@ -18,6 +20,18 @@ struct BookDetailsView: View {
 
         title = book.title
         isRead = book.isRead
+        currentPage =
+            if let currentPage = book.currentPage {
+                String(currentPage)
+            } else {
+                ""
+            }
+        maxPage =
+            if let maxPage = book.maxPage {
+                String(maxPage)
+            } else {
+                ""
+            }
     }
 
     var body: some View {
@@ -27,13 +41,21 @@ struct BookDetailsView: View {
                 TextField("", text: $title)
                     .textFieldStyle(.roundedBorder)
                 Toggle("Read status", isOn: $isRead)
+                Text("Page")
+                HStack {
+                    TextField("", text: $currentPage)
+                        .textFieldStyle(.roundedBorder)
+                    Text("/")
+                    TextField("", text: $maxPage)
+                        .textFieldStyle(.roundedBorder)
+                }
                 Spacer()
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Update") {
-                        updateBook(title: title, isRead: isRead)
+                        updateBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
                     }
                 }
             }
@@ -48,9 +70,11 @@ struct BookDetailsView: View {
 }
 
 extension BookDetailsView {
-    private func updateBook(title: String, isRead: Bool) {
+    private func updateBook(title: String, isRead: Bool, currentPage: String, maxPage: String) {
         book.title = title
         book.isRead = isRead
+        book.currentPage = Int(currentPage)
+        book.maxPage = Int(maxPage)
         do {
             try modelContext.save()
             presentationMode.wrappedValue.dismiss()
