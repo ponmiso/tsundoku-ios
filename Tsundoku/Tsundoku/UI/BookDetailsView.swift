@@ -49,6 +49,8 @@ struct BookDetailsView: View {
                     TextField("", text: $maxPage)
                         .textFieldStyle(.roundedBorder)
                 }
+                Text("Progress: \(progressText)")
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 Spacer()
             }
             .padding()
@@ -81,6 +83,23 @@ extension BookDetailsView {
         } catch {
             updateAlertDetails = UpdateAlertDetails(message: "Please restart the application and try again.")
             isPresentedAlert = true
+        }
+    }
+}
+
+extension BookDetailsView {
+    private var progress: Double? {
+        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
+            return nil
+        }
+        return currentPage / maxPage
+    }
+
+    private var progressText: String {
+        if let progress {
+            "\(Int(progress * 100)) %"
+        } else {
+            "---"
         }
     }
 }
