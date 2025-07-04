@@ -34,7 +34,7 @@ struct BookListView: View {
 extension BookListView {
     private func bookView(_ book: Book) -> some View {
         NavigationLink {
-            Text(book.title)
+            BookDetailsView(book)
         } label: {
             HStack {
                 Text(book.title)
