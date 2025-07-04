@@ -8,6 +8,7 @@ struct BookDetailsView: View {
     @State private var book: Book
 
     @State private var title: String
+    @State private var isRead: Bool
 
     @State private var isPresentedAlert = false
     @State private var updateAlertDetails: UpdateAlertDetails?
@@ -16,6 +17,7 @@ struct BookDetailsView: View {
         self.book = book
 
         title = book.title
+        isRead = book.isRead
     }
 
     var body: some View {
@@ -24,13 +26,14 @@ struct BookDetailsView: View {
                 Text("Title")
                 TextField("", text: $title)
                     .textFieldStyle(.roundedBorder)
+                Toggle("Read status", isOn: $isRead)
                 Spacer()
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Update") {
-                        updateBook(title: title)
+                        updateBook(title: title, isRead: isRead)
                     }
                 }
             }
@@ -45,8 +48,9 @@ struct BookDetailsView: View {
 }
 
 extension BookDetailsView {
-    private func updateBook(title: String) {
+    private func updateBook(title: String, isRead: Bool) {
         book.title = title
+        book.isRead = isRead
         do {
             try modelContext.save()
             presentationMode.wrappedValue.dismiss()
