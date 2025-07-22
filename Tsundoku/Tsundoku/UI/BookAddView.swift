@@ -14,30 +14,16 @@ struct BookAddView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                Text("Title")
-                TextField("", text: $title)
-                    .textFieldStyle(.roundedBorder)
-                if title.isEmpty, didInputedTitle {
-                    Text("Please enter a title")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
-                Toggle("Read status", isOn: $isRead)
-                Text("Page")
-                HStack {
-                    TextField("", text: $currentPage)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
-                    Text("/")
-                    TextField("", text: $maxPage)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
-                }
-                if isOverPage {
-                    Text("Do not exceed the maximum number of pages")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
+                Text("Book Information")
+                    .font(.headline)
+                bookInfoView()
+
+                Spacer().frame(height: 24)
+
+                Text("Book Status")
+                    .font(.headline)
+                bookStatusView()
+
                 Spacer()
             }
             .padding()
@@ -57,6 +43,42 @@ struct BookAddView: View {
         }
         .onChange(of: title) {
             didInputedTitle = true
+        }
+    }
+}
+
+extension BookAddView {
+    private func bookInfoView() -> some View {
+        VStack(alignment: .leading) {
+            Text("Title")
+            TextField("Harry Potter", text: $title)
+                .textFieldStyle(.roundedBorder)
+            if title.isEmpty, didInputedTitle {
+                Text("Please enter a title")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    private func bookStatusView() -> some View {
+        VStack(alignment: .leading) {
+            Toggle("Read status", isOn: $isRead)
+            Text("Page")
+            HStack {
+                TextField("10", text: $currentPage)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
+                Text("/")
+                TextField("100", text: $maxPage)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
+            }
+            if isOverPage {
+                Text("Do not exceed the maximum number of pages")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
         }
     }
 }

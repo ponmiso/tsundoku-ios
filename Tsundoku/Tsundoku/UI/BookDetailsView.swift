@@ -37,25 +37,16 @@ struct BookDetailsView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                Text("Title")
-                TextField("", text: $title)
-                    .textFieldStyle(.roundedBorder)
-                Toggle("Read status", isOn: $isRead)
-                Text("Page")
-                HStack {
-                    TextField("", text: $currentPage)
-                        .textFieldStyle(.roundedBorder)
-                    Text("/")
-                    TextField("", text: $maxPage)
-                        .textFieldStyle(.roundedBorder)
-                }
-                Text("Progress: \(progressText)")
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                if isOverPage {
-                    Text("Do not exceed the maximum number of pages")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
+                Text("Book Information")
+                    .font(.headline)
+                bookInfoView()
+
+                Spacer().frame(height: 24)
+
+                Text("Book Status")
+                    .font(.headline)
+                bookStatusView()
+
                 Spacer()
             }
             .padding()
@@ -77,7 +68,47 @@ struct BookDetailsView: View {
 }
 
 extension BookDetailsView {
+    private func bookInfoView() -> some View {
+        VStack(alignment: .leading) {
+            Text("Title")
+            TextField("Harry Potter", text: $title)
+                .textFieldStyle(.roundedBorder)
+            if title.isEmpty {
+                Text("Please enter a title")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    private func bookStatusView() -> some View {
+        VStack(alignment: .leading) {
+            Toggle("Read status", isOn: $isRead)
+            Text("Page")
+            HStack {
+                TextField("10", text: $currentPage)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
+                Text("/")
+                TextField("100", text: $maxPage)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
+            }
+            Text("Progress: \(progressText)")
+                .frame(maxWidth: .infinity, alignment: .trailing)
+            if isOverPage {
+                Text("Do not exceed the maximum number of pages")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+}
+
+extension BookDetailsView {
     private func updateBook(title: String, isRead: Bool, currentPage: String, maxPage: String) {
+        if title.isEmpty || isOverPage { return }
+
         book.title = title
         book.isRead = isRead
         book.currentPage = Int(currentPage)
@@ -94,7 +125,7 @@ extension BookDetailsView {
 
 extension BookDetailsView {
     private var progress: Double? {
-        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
+        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage), maxPage > 0 else {
             return nil
         }
         return currentPage / maxPage
