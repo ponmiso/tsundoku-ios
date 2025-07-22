@@ -10,14 +10,17 @@ struct BookListView: View {
         NavigationStack {
             Group {
                 if books.isEmpty {
-                    ContentUnavailableView(
-                        "No Books",
-                        systemImage: "book",
-                        description: Text("Tap the button below to add a book."),
-                        actions: {
-                            Button("Add Book", action: addBook)
-                        }
-                    )
+                    ContentUnavailableView {
+                        Label("No Books", systemImage: "book")
+                    } description: {
+                        Text("Please add the book")
+                    } actions: {
+                        Button("Add Book", systemImage: "plus", action: addBook)
+                            .padding(8)
+                            .background(.cyan)
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
                 } else {
                     List {
                         ForEach(books) { book in
