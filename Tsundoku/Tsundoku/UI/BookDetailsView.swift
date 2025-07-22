@@ -40,6 +40,11 @@ struct BookDetailsView: View {
                 Text("Title")
                 TextField("Harry Potter", text: $title)
                     .textFieldStyle(.roundedBorder)
+                if title.isEmpty {
+                    Text("Please enter a title")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
                 Toggle("Read status", isOn: $isRead)
                 Text("Page")
                 HStack {
@@ -78,6 +83,8 @@ struct BookDetailsView: View {
 
 extension BookDetailsView {
     private func updateBook(title: String, isRead: Bool, currentPage: String, maxPage: String) {
+        if title.isEmpty || isOverPage { return }
+
         book.title = title
         book.isRead = isRead
         book.currentPage = Int(currentPage)
