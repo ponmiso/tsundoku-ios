@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		84F406172E2F7D910034978E /* OpenAPIURLSession in Frameworks */ = {isa = PBXBuildFile; productRef = 84F406162E2F7D910034978E /* OpenAPIURLSession */; };
+		84F4061A2E2F7D9C0034978E /* OpenAPIRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 84F406192E2F7D9C0034978E /* OpenAPIRuntime */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		45D37C652D7FEE45009FD80D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84F4061A2E2F7D9C0034978E /* OpenAPIRuntime in Frameworks */,
+				84F406172E2F7D910034978E /* OpenAPIURLSession in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +120,8 @@
 			);
 			name = Tsundoku;
 			packageProductDependencies = (
+				84F406162E2F7D910034978E /* OpenAPIURLSession */,
+				84F406192E2F7D9C0034978E /* OpenAPIRuntime */,
 			);
 			productName = Tsundoku;
 			productReference = 45D37C522D7FEE42009FD80D /* Tsundoku.app */;
@@ -196,6 +205,11 @@
 			);
 			mainGroup = 45D37C492D7FEE42009FD80D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				84F406152E2F7D910034978E /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */,
+				84F406182E2F7D9C0034978E /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */,
+				84F4061B2E2F7DA70034978E /* XCRemoteSwiftPackageReference "swift-openapi-generator" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 45D37C532D7FEE42009FD80D /* Products */;
 			projectDirPath = "";
@@ -583,6 +597,46 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		84F406152E2F7D910034978E /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-openapi-urlsession";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		84F406182E2F7D9C0034978E /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-openapi-runtime";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.2;
+			};
+		};
+		84F4061B2E2F7DA70034978E /* XCRemoteSwiftPackageReference "swift-openapi-generator" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-openapi-generator";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		84F406162E2F7D910034978E /* OpenAPIURLSession */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84F406152E2F7D910034978E /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */;
+			productName = OpenAPIURLSession;
+		};
+		84F406192E2F7D9C0034978E /* OpenAPIRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84F406182E2F7D9C0034978E /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */;
+			productName = OpenAPIRuntime;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 45D37C4A2D7FEE42009FD80D /* Project object */;
 }
