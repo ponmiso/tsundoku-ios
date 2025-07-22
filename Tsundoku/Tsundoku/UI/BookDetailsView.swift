@@ -101,7 +101,7 @@ extension BookDetailsView {
 
 extension BookDetailsView {
     private var progress: Double? {
-        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
+        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage), maxPage > 0 else {
             return nil
         }
         return currentPage / maxPage
