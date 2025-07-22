@@ -88,9 +88,11 @@ extension BookDetailsView {
             HStack {
                 TextField("10", text: $currentPage)
                     .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
                 Text("/")
                 TextField("100", text: $maxPage)
                     .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
             }
             Text("Progress: \(progressText)")
                 .frame(maxWidth: .infinity, alignment: .trailing)
