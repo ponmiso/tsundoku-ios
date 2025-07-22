@@ -8,11 +8,24 @@ struct BookListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(books) { book in
-                    bookView(book)
+            Group {
+                if books.isEmpty {
+                    ContentUnavailableView(
+                        "No Books",
+                        systemImage: "book",
+                        description: Text("Tap the button below to add a book."),
+                        actions: {
+                            Button("Add Book", action: addBook)
+                        }
+                    )
+                } else {
+                    List {
+                        ForEach(books) { book in
+                            bookView(book)
+                        }
+                        .onDelete(perform: deleteBooks)
+                    }
                 }
-                .onDelete(perform: deleteBooks)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
