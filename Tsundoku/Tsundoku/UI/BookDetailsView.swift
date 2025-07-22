@@ -38,15 +38,15 @@ struct BookDetailsView: View {
         NavigationStack {
             VStack(alignment: .leading) {
                 Text("Title")
-                TextField("", text: $title)
+                TextField("Harry Potter", text: $title)
                     .textFieldStyle(.roundedBorder)
                 Toggle("Read status", isOn: $isRead)
                 Text("Page")
                 HStack {
-                    TextField("", text: $currentPage)
+                    TextField("10", text: $currentPage)
                         .textFieldStyle(.roundedBorder)
                     Text("/")
-                    TextField("", text: $maxPage)
+                    TextField("100", text: $maxPage)
                         .textFieldStyle(.roundedBorder)
                 }
                 Text("Progress: \(progressText)")
