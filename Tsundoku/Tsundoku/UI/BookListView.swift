@@ -8,25 +8,47 @@ struct BookListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(books) { book in
-                    bookView(book)
-                }
-                .onDelete(perform: deleteBooks)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addBook) {
-                        Label("Add Book", systemImage: "plus")
+            contentView()
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        EditButton()
+                    }
+                    ToolbarItem {
+                        Button(action: addBook) {
+                            Label("Add Book", systemImage: "plus")
+                        }
                     }
                 }
-            }
         }
         .sheet(isPresented: $isPresentedBookAddView) {
             BookAddView()
+        }
+    }
+}
+
+extension BookListView {
+    private func contentView() -> some View {
+        Group {
+            if books.isEmpty {
+                ContentUnavailableView {
+                    Label("No Books", systemImage: "book")
+                } description: {
+                    Text("Please add the book")
+                } actions: {
+                    Button("Add Book", systemImage: "plus", action: addBook)
+                        .padding(8)
+                        .background(.cyan)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            } else {
+                List {
+                    ForEach(books) { book in
+                        bookView(book)
+                    }
+                    .onDelete(perform: deleteBooks)
+                }
+            }
         }
     }
 }
