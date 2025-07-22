@@ -37,30 +37,16 @@ struct BookDetailsView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                Text("Title")
-                TextField("Harry Potter", text: $title)
-                    .textFieldStyle(.roundedBorder)
-                if title.isEmpty {
-                    Text("Please enter a title")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
-                Toggle("Read status", isOn: $isRead)
-                Text("Page")
-                HStack {
-                    TextField("10", text: $currentPage)
-                        .textFieldStyle(.roundedBorder)
-                    Text("/")
-                    TextField("100", text: $maxPage)
-                        .textFieldStyle(.roundedBorder)
-                }
-                Text("Progress: \(progressText)")
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                if isOverPage {
-                    Text("Do not exceed the maximum number of pages")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
+                Text("Book Information")
+                    .font(.headline)
+                bookInfoView()
+
+                Spacer().frame(height: 24)
+
+                Text("Book Status")
+                    .font(.headline)
+                bookStatusView()
+
                 Spacer()
             }
             .padding()
@@ -78,6 +64,42 @@ struct BookDetailsView: View {
             Text(details.message)
         }
 
+    }
+}
+
+extension BookDetailsView {
+    private func bookInfoView() -> some View {
+        VStack(alignment: .leading) {
+            Text("Title")
+            TextField("Harry Potter", text: $title)
+                .textFieldStyle(.roundedBorder)
+            if title.isEmpty {
+                Text("Please enter a title")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    private func bookStatusView() -> some View {
+        VStack(alignment: .leading) {
+            Toggle("Read status", isOn: $isRead)
+            Text("Page")
+            HStack {
+                TextField("10", text: $currentPage)
+                    .textFieldStyle(.roundedBorder)
+                Text("/")
+                TextField("100", text: $maxPage)
+                    .textFieldStyle(.roundedBorder)
+            }
+            Text("Progress: \(progressText)")
+                .frame(maxWidth: .infinity, alignment: .trailing)
+            if isOverPage {
+                Text("Do not exceed the maximum number of pages")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
     }
 }
 
