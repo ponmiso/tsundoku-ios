@@ -72,6 +72,15 @@ extension ScannerViewController {
 
 extension ScannerViewController {
     private func observe() {
+        viewModel.toggleScanning
+            .sink { [weak self] isScanning in
+                if isScanning {
+                    self?.startScanning()
+                } else {
+                    self?.stopScanning()
+                }
+            }
+            .store(in: &cancellables)
         viewModel.didFetchBook
             .sink { [weak self] book in
                 self?.dismiss(animated: true) { [weak self] in
@@ -114,7 +123,6 @@ extension ScannerViewController: @preconcurrency AVCaptureMetadataOutputObjectsD
         from connection: AVCaptureConnection
     ) {
         if let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let code = metadataObject.stringValue {
-            stopScanning()
             viewModel.didFind(code: code)
         }
     }
