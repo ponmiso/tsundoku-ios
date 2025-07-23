@@ -31,7 +31,9 @@ final class ScannerViewModel {
         Task {
             do {
                 let response = try await OpenBDAPI().getRepositories(isbn: code)
-                didFetchBook.send(Book(title: response.title ?? ""))
+                let maxPage = response.page
+                let currentPage = maxPage == nil ? nil : 0
+                didFetchBook.send(Book(title: response.title ?? "", currentPage: currentPage, maxPage: maxPage))
                 isFetching = true
             } catch {
                 didFailedFetchBook.send(error)

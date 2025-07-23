@@ -54,6 +54,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Contributor'
+        extent:
+          $ref: '#/components/schemas/Extent'
+
+    Extent:
+      type: object
+      properties:
+        extent_value:
+          type: string
 
     CollateralDetail:
       type: object

@@ -9,6 +9,7 @@ struct OpenBDBookResponse: Codable, Equatable {
     let publishingDate: Date?
     let isbn13: String?
     let thumbnailUrl: String?
+    let page: Int?
 }
 
 extension OpenBDBookResponse {
@@ -50,6 +51,13 @@ extension OpenBDBookResponse {
                 nil
             }
 
-        self.init(title: title, description: description, author: author, publisher: publisher, label: label, publishingDate: publishingDate, isbn13: isbn13, thumbnailUrl: thumbnailUrl)
+        let page: Int? =
+            if let extentValue = descriptiveDetail?.extent?.extent_value, let page = Int(extentValue) {
+                page
+            } else {
+                nil
+            }
+
+        self.init(title: title, description: description, author: author, publisher: publisher, label: label, publishingDate: publishingDate, isbn13: isbn13, thumbnailUrl: thumbnailUrl, page: page)
     }
 }
