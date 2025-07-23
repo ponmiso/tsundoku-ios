@@ -30,8 +30,8 @@ final class ScannerViewModel {
 
         Task {
             do {
-                try await Task.sleep(for: .seconds(1))
-                didFetchBook.send(Book(title: code))
+                let response = try await OpenBDAPI().getRepositories(isbn: code)
+                didFetchBook.send(Book(title: response.title ?? ""))
                 isFetching = true
             } catch {
                 didFailedFetchBook.send(error)
