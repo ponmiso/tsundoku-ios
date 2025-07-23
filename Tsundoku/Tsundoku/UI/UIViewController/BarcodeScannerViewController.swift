@@ -12,6 +12,7 @@ class ScannerViewController: UIViewController {
     private let viewModel = ScannerViewModel()
     private let captureSession = AVCaptureSession()
 
+    private var codeLabel: UILabel?
     private var cancellables: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
@@ -124,6 +125,52 @@ extension ScannerViewController: @preconcurrency AVCaptureMetadataOutputObjectsD
     ) {
         if let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let code = metadataObject.stringValue {
             viewModel.didFind(code: code)
+            showCode(code)
         }
+    }
+
+    private func showCode(_ code: String) {
+        if let codeLabel {
+            if let text = codeLabel.text, text == code {
+                return
+            } else {
+                codeLabel.isHidden = true
+                codeLabel.removeFromSuperview()
+            }
+        }
+        let label = defalutCodeLabel
+        label.text = code
+        view.addSubview(label)
+        codeLabel = label
+
+        label.alpha = 0
+        UIView.animate(withDuration: 0.3) {
+            label.alpha = 1
+        }
+        UIView.animate(
+            withDuration: 1.0, delay: 3.0,
+            animations: {
+                label.alpha = 0
+            },
+            completion: { _ in
+                label.removeFromSuperview()
+                self.codeLabel = nil
+            })
+    }
+
+    private var defalutCodeLabel: UILabel {
+        let label = UILabel()
+        label.textColor = .white
+        label.textAlignment = .center
+        label.backgroundColor = .lightGray.withAlphaComponent(0.5)
+        label.font = UIFont.systemFont(ofSize: 24)
+
+        let labelWidth: CGFloat = 300
+        let labelHeight: CGFloat = 50
+        let screenSize = UIScreen.main.bounds.size
+        let x = max((screenSize.width - labelWidth) / 2, 0)
+        let y = (screenSize.height - labelHeight - 100)
+        label.frame = CGRect(x: x, y: y, width: labelWidth, height: labelHeight)
+        return label
     }
 }
