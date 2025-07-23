@@ -1,0 +1,139 @@
+openapi: '3.1.1'
+info:
+  title: Various APIs
+  version: 1.0.0
+servers:
+  - url: https://api.openbd.jp
+    description: openBD endpoint
+paths:
+  /v1/get:
+    get:
+      operationId: getBook
+      summary: 書誌情報の取得
+      tags:
+        - getBook
+      parameters:
+        - name: isbn
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenBDBook'
+components:
+  schemas:
+    OpenBDBook:
+      type: object
+      properties:
+        onix:
+          $ref: '#/components/schemas/Onix'
+        summary:
+          $ref: '#/components/schemas/Summary'
+
+    Onix:
+      type: object
+      properties:
+        descriptive_detail:
+          $ref: '#/components/schemas/DescriptiveDetail'
+        collateral_detail:
+          $ref: '#/components/schemas/CollateralDetail'
+
+    DescriptiveDetail:
+      type: object
+      properties:
+        collection:
+          $ref: '#/components/schemas/Collection'
+        contributor:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contributor'
+
+    CollateralDetail:
+      type: object
+      properties:
+        text_content:
+          type: array
+          items:
+            $ref: '#/components/schemas/TextContent'
+
+    TextContent:
+      type: object
+      properties:
+        text:
+          type: string
+
+    Collection:
+      type: object
+      properties:
+        title_detail:
+          $ref: '#/components/schemas/CollectionTitleDetail'
+
+    Contributor:
+      type: object
+      properties:
+        person_name:
+          $ref: '#/components/schemas/PersonName'
+
+    PersonName:
+      type: object
+      properties:
+        collation_key:
+          type: string
+        content:
+          type: string
+
+    CollectionTitleDetail:
+      type: object
+      properties:
+        title_element:
+          type: array
+          items:
+            $ref: '#/components/schemas/TitleElement'
+
+    TitleElement:
+      type: object
+      properties:
+        title_text:
+          $ref: '#/components/schemas/TitleText'
+
+    TitleText:
+      type: object
+      properties:
+        content:
+          type: string
+
+    Summary:
+      type: object
+      properties:
+        isbn:
+          type: string
+        title:
+          type: string
+        publisher:
+          type: string
+        pubdate:
+          type: string
+        cover:
+          type: string
+        author:
+          type: string
+      required:
+        - isbn
+        - title
+        - publisher
+        - pubdate
+        - cover
+        - author
+tags:
+  - name: getBook
+    description: 書誌情報の取得用のAPI
+externalDocs:
+  description: OpenBD API
+  url: https://openbd.jp/
