@@ -39,8 +39,7 @@ extension OpenBDBookResponse {
             nameKana.isEmpty ? zipName : "\(zipName) (\(zipNameKana))"
         }
 
-        let labelList =
-            Set(descriptiveDetail?.collection?.title_detail?.title_element?.compactMap(\.title_text?.content).filter({ !$0.isEmpty }) ?? [])
+        let labelList = Set(descriptiveDetail?.collection?.title_detail?.title_element?.compactMap(\.title_text?.content).filter({ !$0.isEmpty }) ?? [])
         let label: String? =
             switch labelList.count {
             case labelList.count where labelList.count > 1:

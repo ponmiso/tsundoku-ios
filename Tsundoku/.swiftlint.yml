@@ -1,5 +1,6 @@
 # デフォルト有効で無効にするルール
-#disabled_rules:
+disabled_rules:
+  - line_length
 
 # デフォルト無効で有効にするルール
 #opt_in_rules:
@@ -22,4 +23,3 @@ custom_rules:
     capture_group: 1
     message: 'The enum case should be lower camel case'
     severity: warning
-
