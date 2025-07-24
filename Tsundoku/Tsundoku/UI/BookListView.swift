@@ -54,16 +54,24 @@ extension BookListView {
             } else {
                 List {
                     Section("Unread") {
-                        ForEach(unreadBooks) { book in
-                            bookView(book)
+                        if unreadBooks.isEmpty {
+                            bookEmptyView()
+                        } else {
+                            ForEach(unreadBooks) { book in
+                                bookView(book)
+                            }
+                            .onDelete(perform: deleteBooks)
                         }
-                        .onDelete(perform: deleteBooks)
                     }
                     Section("Read") {
-                        ForEach(readBooks) { book in
-                            bookView(book)
+                        if readBooks.isEmpty {
+                            bookEmptyView()
+                        } else {
+                            ForEach(readBooks) { book in
+                                bookView(book)
+                            }
+                            .onDelete(perform: deleteBooks)
                         }
-                        .onDelete(perform: deleteBooks)
                     }
                 }
             }
@@ -87,6 +95,13 @@ extension BookListView {
                 }
             }
         }
+    }
+
+    private func bookEmptyView() -> some View {
+        Text("No Books")
+            .font(.body)
+            .lineLimit(1)
+            .listRowBackground(Color.clear)
     }
 }
 
