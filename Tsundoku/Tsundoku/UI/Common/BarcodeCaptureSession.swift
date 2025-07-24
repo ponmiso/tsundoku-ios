@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import Combine
 import UIKit
 
@@ -42,14 +42,18 @@ final class BarcodeCaptureSession: NSObject {
     }
 
     func startRunning() {
-        if !captureSession.isRunning {
-            captureSession.startRunning()
+        Task.detached { [captureSession] in
+            if !captureSession.isRunning {
+                captureSession.startRunning()
+            }
         }
     }
 
     func stopRunning() {
-        if captureSession.isRunning {
-            captureSession.stopRunning()
+        Task.detached { [captureSession] in
+            if captureSession.isRunning {
+                captureSession.stopRunning()
+            }
         }
     }
 }
