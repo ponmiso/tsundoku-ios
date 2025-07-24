@@ -43,10 +43,18 @@ extension BookListView {
                 }
             } else {
                 List {
-                    ForEach(books) { book in
-                        bookView(book)
+                    Section("Unread") {
+                        ForEach(books) { book in
+                            bookView(book)
+                        }
+                        .onDelete(perform: deleteBooks)
                     }
-                    .onDelete(perform: deleteBooks)
+                    Section("Read") {
+                        ForEach(books) { book in
+                            bookView(book)
+                        }
+                        .onDelete(perform: deleteBooks)
+                    }
                 }
             }
         }
