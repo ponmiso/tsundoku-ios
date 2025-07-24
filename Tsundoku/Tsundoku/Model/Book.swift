@@ -11,16 +11,19 @@ final class Book {
     var currentPage: Int?
     /// 最大ページ数
     var maxPage: Int?
+    /// 画像
+    var image: BookImage?
     /// 登録日
     var created: Date
     /// 更新日
     var updated: Date
 
-    init(title: String, isRead: Bool = false, currentPage: Int? = nil, maxPage: Int? = nil, created: Date = .now, updated: Date = .now) {
+    init(title: String, isRead: Bool = false, currentPage: Int? = nil, maxPage: Int? = nil, image: BookImage? = nil, created: Date = .now, updated: Date = .now) {
         self.title = title
         self.isRead = isRead
         self.currentPage = currentPage
         self.maxPage = maxPage
+        self.image = image
         self.created = created
         self.updated = updated
     }
