@@ -25,7 +25,10 @@ class ScannerViewController: UIViewController {
         observe()
         setupNavigationBar()
 
-        barcodeCaptureSession.attachPreviewLayer(to: view)
+        let barcodeView = barcodeView
+        view.addSubview(barcodeView)
+
+        barcodeCaptureSession.attachPreviewLayer(to: barcodeView)
         barcodeCaptureSession.startRunning()
     }
 
@@ -37,6 +40,20 @@ class ScannerViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         barcodeCaptureSession?.stopRunning()
+    }
+}
+
+extension ScannerViewController {
+    private var barcodeView: UIView {
+        let screenSize = UIScreen.main.bounds.size
+        let viewWidth = screenSize.width * 0.9
+        let viewHeight: CGFloat = 100
+        let x = (screenSize.width - viewWidth) / 2
+        let y: CGFloat = 100
+
+        let frame = CGRect(x: x, y: y, width: viewWidth, height: viewHeight)
+        let view = UIView(frame: frame)
+        return view
     }
 }
 
