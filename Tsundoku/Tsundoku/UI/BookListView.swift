@@ -3,7 +3,7 @@ import SwiftUI
 
 struct BookListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var books: [Book]
+    @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
     @State private var isPresentedBookAddView = false
 
     var body: some View {
