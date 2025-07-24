@@ -70,7 +70,9 @@ extension BookListView {
                 ForEach(books) { book in
                     bookView(book)
                 }
-                .onDelete(perform: deleteBooks)
+                .onDelete {
+                    deleteBooks(at: $0, in: books)
+                }
             }
         }
     }
@@ -105,7 +107,7 @@ extension BookListView {
         isPresentedBookAddView = true
     }
 
-    private func deleteBooks(offsets: IndexSet) {
+    private func deleteBooks(at offsets: IndexSet, in books: [Book]) {
         withAnimation {
             for index in offsets {
                 modelContext.delete(books[index])
