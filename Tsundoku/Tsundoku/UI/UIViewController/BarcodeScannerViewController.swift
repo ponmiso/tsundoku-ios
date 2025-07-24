@@ -10,7 +10,7 @@ class ScannerViewController: UIViewController {
     weak var delegate: ScannerViewControllerDelegate?
 
     private let viewModel = ScannerViewModel()
-    private let captureSession = AVCaptureSession()
+    private let barcodeCaptureSession = BarcodeCaptureSession()
 
     private var codeLabel: UILabel?
     private var cancellables: Set<AnyCancellable> = []
@@ -18,56 +18,25 @@ class ScannerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video),
-            let videoInput = try? AVCaptureDeviceInput(device: videoCaptureDevice),
-            captureSession.canAddInput(videoInput)
-        else {
+        guard let barcodeCaptureSession else {
             return
         }
 
         observe()
         setupNavigationBar()
 
-        captureSession.addInput(videoInput)
-
-        let metadataOutput = AVCaptureMetadataOutput()
-        if captureSession.canAddOutput(metadataOutput) {
-            captureSession.addOutput(metadataOutput)
-
-            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [.ean13]  // 対応バーコードタイプ
-        }
-
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
-
-        startScanning()
+        barcodeCaptureSession.attachPreviewLayer(to: view)
+        barcodeCaptureSession.startRunning()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        startScanning()
+        barcodeCaptureSession?.startRunning()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        stopScanning()
-    }
-}
-
-extension ScannerViewController {
-    private func startScanning() {
-        if !captureSession.isRunning {
-            captureSession.startRunning()
-        }
-    }
-
-    private func stopScanning() {
-        if captureSession.isRunning {
-            captureSession.stopRunning()
-        }
+        barcodeCaptureSession?.stopRunning()
     }
 }
 
@@ -76,9 +45,9 @@ extension ScannerViewController {
         viewModel.toggleScanning
             .sink { [weak self] isScanning in
                 if isScanning {
-                    self?.startScanning()
+                    self?.barcodeCaptureSession?.startRunning()
                 } else {
-                    self?.stopScanning()
+                    self?.barcodeCaptureSession?.stopRunning()
                 }
             }
             .store(in: &cancellables)
@@ -94,13 +63,20 @@ extension ScannerViewController {
                 self?.showAlert(error)
             }
             .store(in: &cancellables)
+
+        barcodeCaptureSession?.codePublisher
+            .sink { [weak self] code in
+                self?.viewModel.didFind(code: code)
+                self?.showCode(code)
+            }
+            .store(in: &cancellables)
     }
 
     private func showAlert(_ error: Error) {
         let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
             guard let self else { return }
-            startScanning()
+            barcodeCaptureSession?.startRunning()
         }
         alert.addAction(action)
         present(alert, animated: true)
@@ -117,18 +93,7 @@ extension ScannerViewController {
     }
 }
 
-extension ScannerViewController: @preconcurrency AVCaptureMetadataOutputObjectsDelegate {
-    func metadataOutput(
-        _ output: AVCaptureMetadataOutput,
-        didOutput metadataObjects: [AVMetadataObject],
-        from connection: AVCaptureConnection
-    ) {
-        if let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let code = metadataObject.stringValue {
-            viewModel.didFind(code: code)
-            showCode(code)
-        }
-    }
-
+extension ScannerViewController {
     private func showCode(_ code: String) {
         if let codeLabel {
             if let text = codeLabel.text, text == code {
