@@ -27,6 +27,16 @@ struct BookListView: View {
 }
 
 extension BookListView {
+    private var readBooks: [Book] {
+        books.filter(\.isRead)
+    }
+
+    private var unreadBooks: [Book] {
+        books.filter(\.isUnread)
+    }
+}
+
+extension BookListView {
     private func contentView() -> some View {
         Group {
             if books.isEmpty {
@@ -44,13 +54,13 @@ extension BookListView {
             } else {
                 List {
                     Section("Unread") {
-                        ForEach(books) { book in
+                        ForEach(unreadBooks) { book in
                             bookView(book)
                         }
                         .onDelete(perform: deleteBooks)
                     }
                     Section("Read") {
-                        ForEach(books) { book in
+                        ForEach(readBooks) { book in
                             bookView(book)
                         }
                         .onDelete(perform: deleteBooks)

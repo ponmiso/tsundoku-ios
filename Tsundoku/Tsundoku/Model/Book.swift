@@ -22,3 +22,9 @@ final class Book {
         self.created = created
     }
 }
+
+extension Book {
+    var isUnread: Bool {
+        !isRead
+    }
+}
