@@ -53,26 +53,8 @@ extension BookListView {
                 }
             } else {
                 List {
-                    Section("Unread") {
-                        if unreadBooks.isEmpty {
-                            bookEmptyView()
-                        } else {
-                            ForEach(unreadBooks) { book in
-                                bookView(book)
-                            }
-                            .onDelete(perform: deleteBooks)
-                        }
-                    }
-                    Section("Read") {
-                        if readBooks.isEmpty {
-                            bookEmptyView()
-                        } else {
-                            ForEach(readBooks) { book in
-                                bookView(book)
-                            }
-                            .onDelete(perform: deleteBooks)
-                        }
-                    }
+                    bookSectionView(name: "Unread", books: unreadBooks)
+                    bookSectionView(name: "Read", books: readBooks)
                 }
             }
         }
@@ -80,6 +62,19 @@ extension BookListView {
 }
 
 extension BookListView {
+    private func bookSectionView(name: LocalizedStringKey, books: [Book]) -> some View {
+        Section(name) {
+            if books.isEmpty {
+                bookEmptyView()
+            } else {
+                ForEach(books) { book in
+                    bookView(book)
+                }
+                .onDelete(perform: deleteBooks)
+            }
+        }
+    }
+
     private func bookView(_ book: Book) -> some View {
         NavigationLink {
             BookDetailsView(book)
