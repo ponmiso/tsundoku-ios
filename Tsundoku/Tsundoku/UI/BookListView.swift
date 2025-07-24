@@ -3,7 +3,7 @@ import SwiftUI
 
 struct BookListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var books: [Book]
+    @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
     @State private var isPresentedBookAddView = false
 
     var body: some View {
@@ -27,6 +27,16 @@ struct BookListView: View {
 }
 
 extension BookListView {
+    private var readBooks: [Book] {
+        books.filter(\.isRead)
+    }
+
+    private var unreadBooks: [Book] {
+        books.filter(\.isUnread)
+    }
+}
+
+extension BookListView {
     private func contentView() -> some View {
         Group {
             if books.isEmpty {
@@ -43,10 +53,8 @@ extension BookListView {
                 }
             } else {
                 List {
-                    ForEach(books) { book in
-                        bookView(book)
-                    }
-                    .onDelete(perform: deleteBooks)
+                    bookSectionView(name: "Unread", books: unreadBooks)
+                    bookSectionView(name: "Read", books: readBooks)
                 }
             }
         }
@@ -54,6 +62,21 @@ extension BookListView {
 }
 
 extension BookListView {
+    private func bookSectionView(name: LocalizedStringKey, books: [Book]) -> some View {
+        Section(name) {
+            if books.isEmpty {
+                bookEmptyView()
+            } else {
+                ForEach(books) { book in
+                    bookView(book)
+                }
+                .onDelete {
+                    deleteBooks(at: $0, in: books)
+                }
+            }
+        }
+    }
+
     private func bookView(_ book: Book) -> some View {
         NavigationLink {
             BookDetailsView(book)
@@ -63,10 +86,19 @@ extension BookListView {
                     .font(.body)
                     .lineLimit(1)
                 Spacer()
-                Text(book.isRead ? "Read" : "Not Read")
-                    .font(.caption)
+                if book.isUnread {
+                    Text("progress: \(book.progressText)")
+                        .font(.caption)
+                }
             }
         }
+    }
+
+    private func bookEmptyView() -> some View {
+        Text("No Books")
+            .font(.body)
+            .lineLimit(1)
+            .listRowBackground(Color.clear)
     }
 }
 
@@ -75,7 +107,7 @@ extension BookListView {
         isPresentedBookAddView = true
     }
 
-    private func deleteBooks(offsets: IndexSet) {
+    private func deleteBooks(at offsets: IndexSet, in books: [Book]) {
         withAnimation {
             for index in offsets {
                 modelContext.delete(books[index])

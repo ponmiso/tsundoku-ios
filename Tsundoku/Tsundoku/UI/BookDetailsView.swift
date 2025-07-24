@@ -113,6 +113,7 @@ extension BookDetailsView {
         book.isRead = isRead
         book.currentPage = Int(currentPage)
         book.maxPage = Int(maxPage)
+        book.updated = .now
         do {
             try modelContext.save()
             presentationMode.wrappedValue.dismiss()
@@ -140,10 +141,7 @@ extension BookDetailsView {
     }
 
     private var isOverPage: Bool {
-        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
-            return false
-        }
-        return currentPage > maxPage
+        currentPage > maxPage
     }
 }
 

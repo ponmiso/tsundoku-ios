@@ -11,14 +11,45 @@ final class Book {
     var currentPage: Int?
     /// 最大ページ数
     var maxPage: Int?
-    /// アプリでの登録日
+    /// 登録日
     var created: Date
+    /// 更新日
+    var updated: Date
 
-    init(title: String, isRead: Bool = false, currentPage: Int? = nil, maxPage: Int? = nil, created: Date = .now) {
+    init(title: String, isRead: Bool = false, currentPage: Int? = nil, maxPage: Int? = nil, created: Date = .now, updated: Date = .now) {
         self.title = title
         self.isRead = isRead
         self.currentPage = currentPage
         self.maxPage = maxPage
         self.created = created
+        self.updated = updated
+    }
+}
+
+extension Book {
+    var isUnread: Bool {
+        !isRead
+    }
+
+    var progressText: String {
+        if let progress, !isOverPage {
+            "\(Int(progress * 100)) %"
+        } else {
+            "---"
+        }
+    }
+
+    private var progress: Double? {
+        guard let currentPage, let maxPage, maxPage > 0 else {
+            return nil
+        }
+        return Double(currentPage) / Double(maxPage)
+    }
+
+    private var isOverPage: Bool {
+        guard let currentPage, let maxPage else {
+            return false
+        }
+        return currentPage > maxPage
     }
 }
