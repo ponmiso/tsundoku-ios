@@ -141,10 +141,7 @@ extension BookDetailsView {
     }
 
     private var isOverPage: Bool {
-        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
-            return false
-        }
-        return currentPage > maxPage
+        currentPage > maxPage
     }
 }
 

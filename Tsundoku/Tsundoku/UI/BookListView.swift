@@ -81,8 +81,10 @@ extension BookListView {
                     .font(.body)
                     .lineLimit(1)
                 Spacer()
-                Text(book.isRead ? "Read" : "Not Read")
-                    .font(.caption)
+                if book.isUnread {
+                    Text("progress: \(book.progressText)")
+                        .font(.caption)
+                }
             }
         }
     }
