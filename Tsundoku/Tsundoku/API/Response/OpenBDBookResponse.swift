@@ -8,7 +8,7 @@ struct OpenBDBookResponse: Codable, Equatable {
     let label: String?
     let publishingDate: Date?
     let isbn13: String?
-    let thumbnailUrl: String?
+    let thumbnailUrl: URL?
     let page: Int?
 }
 
@@ -18,7 +18,7 @@ extension OpenBDBookResponse {
         let publisher = json.summary?.publisher
         let publishingDate = json.summary?.pubdate.toDateFromYYYYMMDD
         let isbn13 = json.summary?.isbn
-        let thumbnailUrl = json.summary?.cover
+        let thumbnailUrl = URL(string: json.summary?.cover ?? "")
 
         let descriptionList = Set(json.onix?.collateral_detail?.text_content ?? [])
         let count = descriptionList.count
