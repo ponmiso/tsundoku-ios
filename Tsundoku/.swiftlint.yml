@@ -1,7 +1,8 @@
 # デフォルト有効で無効にするルール
 disabled_rules:
   - line_length
-
+  - identifier_name
+  
 # デフォルト無効で有効にするルール
 #opt_in_rules:
 
