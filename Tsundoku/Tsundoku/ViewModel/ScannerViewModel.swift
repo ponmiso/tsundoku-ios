@@ -11,8 +11,6 @@ final class ScannerViewModel {
     private var isFetching = false
 
     func didFind(code: String) {
-        print("Found code: \(code)")
-
         if isFetching {
             return
         }
@@ -33,7 +31,13 @@ final class ScannerViewModel {
                 let response = try await OpenBDAPI().getRepositories(isbn: code)
                 let maxPage = response.page
                 let currentPage = maxPage == nil ? nil : 0
-                didFetchBook.send(Book(title: response.title ?? "", currentPage: currentPage, maxPage: maxPage))
+                let image: BookImage? =
+                    if let url = response.thumbnailUrl {
+                        BookImage.url(url)
+                    } else {
+                        nil
+                    }
+                didFetchBook.send(Book(title: response.title ?? "", currentPage: currentPage, maxPage: maxPage, image: image))
                 isFetching = true
             } catch {
                 didFailedFetchBook.send(error)

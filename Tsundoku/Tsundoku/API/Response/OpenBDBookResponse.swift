@@ -14,6 +14,7 @@ struct OpenBDBookResponse: Codable, Equatable {
 
 extension OpenBDBookResponse {
     init(_ json: Components.Schemas.OpenBDBook) {
+        print("openBDBookResponse: \(json)")
         let title = json.summary?.title
         let publisher = json.summary?.publisher
         let publishingDate = json.summary?.pubdate.toDateFromYYYYMMDD

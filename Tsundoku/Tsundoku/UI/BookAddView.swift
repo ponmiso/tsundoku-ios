@@ -5,6 +5,7 @@ struct BookAddView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
+    @State private var image: BookImage?
     @State private var title = ""
     @State private var didInputedTitle = false
     @State private var isRead = false
@@ -50,6 +51,7 @@ struct BookAddView: View {
         }
         .sheet(isPresented: $isPresentingScanner) {
             BarcodeScannerView { book in
+                image = book.image
                 title = book.title
             }
         }
@@ -62,6 +64,11 @@ struct BookAddView: View {
 extension BookAddView {
     private func bookInfoView() -> some View {
         VStack(alignment: .leading) {
+            Text("Thumbnail")
+            // TODO: tap function
+            BookImageView(image: image)
+                .frame(width: 120, height: 120)
+
             Text("Title")
             TextField("Harry Potter", text: $title)
                 .textFieldStyle(.roundedBorder)
