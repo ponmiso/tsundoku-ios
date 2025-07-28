@@ -12,7 +12,7 @@ struct BookAddView: View {
     @State private var currentPage = ""
     @State private var maxPage = ""
 
-    @State private var isPresentingScanner = false
+    @State private var isPresentedScanner = false
 
     var body: some View {
         NavigationStack {
@@ -33,7 +33,7 @@ struct BookAddView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("", systemImage: "barcode") {
-                        isPresentingScanner = true
+                        isPresentedScanner = true
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -49,7 +49,7 @@ struct BookAddView: View {
                 }
             }
         }
-        .sheet(isPresented: $isPresentingScanner) {
+        .sheet(isPresented: $isPresentedScanner) {
             BarcodeScannerView { book in
                 image = book.image
                 title = book.title
