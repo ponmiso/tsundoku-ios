@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -13,6 +14,8 @@ struct BookAddView: View {
     @State private var maxPage = ""
 
     @State private var isPresentedScanner = false
+    @State private var isPresentedPhotosPicker = false
+    @State private var selectedPickerItem: PhotosPickerItem?
 
     var body: some View {
         NavigationStack {
@@ -55,6 +58,10 @@ struct BookAddView: View {
                 title = book.title
             }
         }
+        .photosPicker(isPresented: $isPresentedPhotosPicker, selection: $selectedPickerItem, matching: .images)
+        .onChange(of: selectedPickerItem) { _, newValue in
+            onChangePhotosPickerItem(newValue)
+        }
         .onChange(of: title) {
             didInputedTitle = true
         }
@@ -65,9 +72,12 @@ extension BookAddView {
     private func bookInfoView() -> some View {
         VStack(alignment: .leading) {
             Text("Thumbnail")
-            // TODO: tap function
-            BookImageView(image: image)
-                .frame(width: 120, height: 120)
+            Button {
+                isPresentedPhotosPicker = true
+            } label: {
+                BookImageView(image: image)
+                    .frame(width: 120, height: 120)
+            }
 
             Text("Title")
             TextField("Harry Potter", text: $title)
@@ -110,6 +120,36 @@ extension BookAddView {
         let maxPage = Int(maxPage)
         let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: image)
         modelContext.insert(newBook)
+    }
+}
+
+extension BookAddView {
+    private func onChangePhotosPickerItem(_ item: PhotosPickerItem?) {
+        Task {
+            guard let item else {
+                return
+            }
+            let url = await saveTempPhotosPickerItem(item)
+            guard let url else {
+                return
+            }
+            image = .filePath(url)
+        }
+    }
+
+    private func saveTempPhotosPickerItem(_ item: PhotosPickerItem) async -> URL? {
+        let data = try? await item.loadTransferable(type: Data.self)
+        guard let data else {
+            return nil
+        }
+        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("photo_\(timestamp).jpg")
+        do {
+            try data.write(to: tempURL)
+            return tempURL
+        } catch {
+            return nil
+        }
     }
 }
 

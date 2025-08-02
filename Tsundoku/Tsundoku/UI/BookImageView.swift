@@ -26,6 +26,7 @@ extension BookImageView {
     private func placeholder() -> some View {
         Image(systemName: "plus")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .foregroundStyle(.black)
             .background(.gray)
     }
 }
