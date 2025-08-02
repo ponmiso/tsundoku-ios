@@ -38,7 +38,7 @@ struct BookAddView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
-                        addBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
+                        addBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: image)
                         dismiss()
                     }
                 }
@@ -103,12 +103,12 @@ extension BookAddView {
 }
 
 extension BookAddView {
-    private func addBook(title: String, isRead: Bool, currentPage: String, maxPage: String) {
+    private func addBook(title: String, isRead: Bool, currentPage: String, maxPage: String, image: BookImage?) {
         if title.isEmpty || isOverPage { return }
 
         let currentPage = Int(currentPage)
         let maxPage = Int(maxPage)
-        let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
+        let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: image)
         modelContext.insert(newBook)
     }
 }
