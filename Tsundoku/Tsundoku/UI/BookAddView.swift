@@ -116,9 +116,23 @@ extension BookAddView {
     private func addBook(title: String, isRead: Bool, currentPage: String, maxPage: String, image: BookImage?) {
         if title.isEmpty || isOverPage { return }
 
+        // 端末の画像が選択されている場合は、アプリ領域に永続的に画像を保存してそのファイルパスを保存する
+        let newImage: BookImage?
+        if let image, case let .filePath(url) = image {
+            do {
+                let newURL = try BookImageFileManager().moveToFile(from: url)
+                newImage = BookImage.filePath(newURL)
+            } catch {
+                // TODO: アラート表示してそのまま保存するかどうか選ばせる
+                newImage = nil
+            }
+        } else {
+            newImage = nil
+        }
+
         let currentPage = Int(currentPage)
         let maxPage = Int(maxPage)
-        let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: image)
+        let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: newImage)
         modelContext.insert(newBook)
     }
 }
@@ -133,7 +147,7 @@ extension BookAddView {
             guard let data else {
                 return
             }
-            let url = await BookImageFileManager().saveTempPhotosPickerItem(data)
+            let url = try? await BookImageFileManager().saveTempPhotosPickerItem(data)
             guard let url else {
                 return
             }
