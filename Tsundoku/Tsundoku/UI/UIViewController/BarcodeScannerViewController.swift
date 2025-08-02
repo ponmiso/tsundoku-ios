@@ -18,18 +18,9 @@ class ScannerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        guard let barcodeCaptureSession else {
-            return
-        }
-
         observe()
         setupNavigationBar()
-
-        let barcodeView = barcodeView
-        view.addSubview(barcodeView)
-
-        barcodeCaptureSession.attachPreviewLayer(to: barcodeView)
-        barcodeCaptureSession.startRunning()
+        setupChildrenView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -40,20 +31,6 @@ class ScannerViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         barcodeCaptureSession?.stopRunning()
-    }
-}
-
-extension ScannerViewController {
-    private var barcodeView: UIView {
-        let screenSize = UIScreen.main.bounds.size
-        let viewWidth = screenSize.width * 0.9
-        let viewHeight: CGFloat = 100
-        let x = (screenSize.width - viewWidth) / 2
-        let y: CGFloat = 100
-
-        let frame = CGRect(x: x, y: y, width: viewWidth, height: viewHeight)
-        let view = UIView(frame: frame)
-        return view
     }
 }
 
@@ -107,6 +84,33 @@ extension ScannerViewController {
 
     @objc func didCancelTapped() {
         dismiss(animated: true, completion: nil)
+    }
+
+    private func setupChildrenView() {
+        let barcodeView = UIView()
+        barcodeView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(barcodeView)
+        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
+        barcodeCaptureSession?.startRunning()
+
+        NSLayoutConstraint.activate([
+            barcodeView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
+            barcodeView.heightAnchor.constraint(equalToConstant: 100),
+            barcodeView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            barcodeView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+        ])
+
+        let button = UIButton(type: .system)
+        button.setTitle("Enter ISBNs manually", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(button)
+
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 200),
+            button.heightAnchor.constraint(equalToConstant: 44),
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 100),
+        ])
     }
 }
 

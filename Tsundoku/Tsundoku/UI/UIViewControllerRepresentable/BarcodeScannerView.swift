@@ -28,3 +28,9 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         }
     }
 }
+
+#Preview {
+    BarcodeScannerView { book in
+        print(book)
+    }
+}
