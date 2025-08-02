@@ -129,26 +129,15 @@ extension BookAddView {
             guard let item else {
                 return
             }
-            let url = await saveTempPhotosPickerItem(item)
+            let data = try? await item.loadTransferable(type: Data.self)
+            guard let data else {
+                return
+            }
+            let url = await BookImageFileManager().saveTempPhotosPickerItem(data)
             guard let url else {
                 return
             }
             image = .filePath(url)
-        }
-    }
-
-    private func saveTempPhotosPickerItem(_ item: PhotosPickerItem) async -> URL? {
-        let data = try? await item.loadTransferable(type: Data.self)
-        guard let data else {
-            return nil
-        }
-        let timestamp = Int(Date().timeIntervalSince1970 * 1000)
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("photo_\(timestamp).jpg")
-        do {
-            try data.write(to: tempURL)
-            return tempURL
-        } catch {
-            return nil
         }
     }
 }
