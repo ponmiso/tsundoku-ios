@@ -9,8 +9,18 @@ final class ScannerViewModel {
     let didFailedFetchBook = PassthroughSubject<Error, Never>()
 
     private var isFetching = false
+}
 
+extension ScannerViewModel {
     func didFind(code: String) {
+        fetchBook(code: code)
+    }
+
+    func didInputISBN(code: String) {
+        fetchBook(code: code)
+    }
+
+    private func fetchBook(code: String) {
         if isFetching {
             return
         }

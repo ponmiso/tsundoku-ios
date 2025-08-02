@@ -102,6 +102,7 @@ extension ScannerViewController {
 
         let button = UIButton(type: .system)
         button.setTitle("Enter ISBNs manually", for: .normal)
+        button.addTarget(self, action: #selector(tappedAddISBNButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
 
@@ -111,6 +112,24 @@ extension ScannerViewController {
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 100),
         ])
+    }
+
+    @objc func tappedAddISBNButton() {
+        let alert = UIAlertController(title: nil, message: "Enter ISBN", preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.placeholder = "9784780802047"
+        }
+        let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            guard let code = alert.textFields?.first?.text else {
+                return
+            }
+            self?.viewModel.didInputISBN(code: code)
+            self?.showCode(code)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
     }
 }
 
