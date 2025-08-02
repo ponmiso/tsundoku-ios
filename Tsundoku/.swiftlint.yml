@@ -2,7 +2,8 @@
 disabled_rules:
   - line_length
   - identifier_name
-  
+  - trailing_comma
+
 # デフォルト無効で有効にするルール
 #opt_in_rules:
 
