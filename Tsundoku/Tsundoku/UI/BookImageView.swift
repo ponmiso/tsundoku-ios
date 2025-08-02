@@ -13,9 +13,14 @@ struct BookImageView: View {
             } placeholder: {
                 Color.gray
             }
-        case .filePath:
-            // TODO: show image from file path
-            EmptyView()
+        case let .filePath(fileURL):
+            if let uiImage = UIImage(contentsOfFile: fileURL.path) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                Text("Image could not be loaded")
+            }
         case .none:
             placeholder()
         }
