@@ -32,6 +32,7 @@
 		45D37C522D7FEE42009FD80D /* Tsundoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tsundoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D37C642D7FEE45009FD80D /* TsundokuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TsundokuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D37C6E2D7FEE46009FD80D /* TsundokuUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TsundokuUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		84872A192E50D6CB00630046 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -95,6 +96,7 @@
 		45D37C492D7FEE42009FD80D = {
 			isa = PBXGroup;
 			children = (
+				84872A142E50D68A00630046 /* ci_scripts */,
 				45D37C542D7FEE42009FD80D /* Tsundoku */,
 				45D37C672D7FEE45009FD80D /* TsundokuTests */,
 				45D37C712D7FEE46009FD80D /* TsundokuUITests */,
@@ -110,6 +112,14 @@
 				45D37C6E2D7FEE46009FD80D /* TsundokuUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		84872A142E50D68A00630046 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				84872A192E50D6CB00630046 /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
