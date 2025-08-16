@@ -19,7 +19,7 @@ struct BookImageView: View {
                     .resizable()
                     .scaledToFit()
             } else {
-                Text("Image could not be loaded")
+                Color.gray
             }
         case .none:
             placeholder()
