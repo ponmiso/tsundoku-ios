@@ -82,9 +82,11 @@ extension BookListView {
             BookDetailsView(book)
         } label: {
             HStack {
+                BookImageView(image: book.image)
+                    .frame(width: 80, height: 80)
                 Text(book.title)
                     .font(.body)
-                    .lineLimit(1)
+                    .lineLimit(3)
                 Spacer()
                 if book.isUnread {
                     Text("progress: \(book.progressText)")
