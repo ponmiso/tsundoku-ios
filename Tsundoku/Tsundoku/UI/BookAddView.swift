@@ -42,7 +42,6 @@ struct BookAddView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
                         addBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: image)
-                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -134,6 +133,7 @@ extension BookAddView {
         let maxPage = Int(maxPage)
         let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: newImage)
         modelContext.insert(newBook)
+        dismiss()
     }
 }
 
