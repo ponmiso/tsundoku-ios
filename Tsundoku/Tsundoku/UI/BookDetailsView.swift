@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -5,8 +6,11 @@ struct BookDetailsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.presentationMode) var presentationMode
 
+    /// SwiftDataに管理されているBook
     @State private var book: Book
 
+    /// 表示用のプロパティ
+    @State private var image: BookImage?
     @State private var title: String
     @State private var isRead: Bool
     @State private var currentPage: String
@@ -14,10 +18,13 @@ struct BookDetailsView: View {
 
     @State private var isPresentedAlert = false
     @State private var updateAlertDetails: UpdateAlertDetails?
+    @State private var isPresentedPhotosPicker = false
+    @State private var selectedPickerItem: PhotosPickerItem?
 
     init(_ book: Book) {
         self.book = book
 
+        image = book.image
         title = book.title
         isRead = book.isRead
         currentPage =
@@ -63,6 +70,10 @@ struct BookDetailsView: View {
         } message: { details in
             Text(details.message)
         }
+        .photosPicker(isPresented: $isPresentedPhotosPicker, selection: $selectedPickerItem, matching: .images)
+        .onChange(of: selectedPickerItem) { _, newValue in
+            onChangePhotosPickerItem(newValue)
+        }
 
     }
 }
@@ -70,6 +81,14 @@ struct BookDetailsView: View {
 extension BookDetailsView {
     private func bookInfoView() -> some View {
         VStack(alignment: .leading) {
+            Text("Thumbnail")
+            Button {
+                isPresentedPhotosPicker = true
+            } label: {
+                BookImageView(image: image)
+                    .frame(width: 120, height: 120)
+            }
+
             Text("Title")
             TextField("Harry Potter", text: $title)
                 .textFieldStyle(.roundedBorder)
@@ -109,6 +128,17 @@ extension BookDetailsView {
     private func updateBook(title: String, isRead: Bool, currentPage: String, maxPage: String) {
         if title.isEmpty || isOverPage { return }
 
+        // 画像が変更されている場合は画像を更新する
+        if isChangedImage,
+           let image, case let .filePath(url) = image {
+            do {
+                let newURL = try BookImageFileManager().moveToFile(from: url)
+                book.image = BookImage.filePath(newURL)
+            } catch {
+                // TODO: アラート表示してそのまま保存するかどうか選ばせる
+            }
+        }
+
         book.title = title
         book.isRead = isRead
         book.currentPage = Int(currentPage)
@@ -142,6 +172,36 @@ extension BookDetailsView {
 
     private var isOverPage: Bool {
         currentPage > maxPage
+    }
+
+    private var isChangedImage: Bool {
+        return switch (image, book.image) {
+        case let (image1?, image2?):
+            image1 != image2
+        case (nil, nil):
+            false
+        default:
+            true
+        }
+    }
+}
+
+extension BookDetailsView {
+    private func onChangePhotosPickerItem(_ item: PhotosPickerItem?) {
+        Task {
+            guard let item else {
+                return
+            }
+            let data = try? await item.loadTransferable(type: Data.self)
+            guard let data else {
+                return
+            }
+            let url = try? await BookImageFileManager().saveTempPhotosPickerItem(data)
+            guard let url else {
+                return
+            }
+            image = .filePath(url)
+        }
     }
 }
 
