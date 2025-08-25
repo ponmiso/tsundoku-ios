@@ -90,9 +90,6 @@ extension ScannerViewController {
         let barcodeView = UIView()
         barcodeView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(barcodeView)
-        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
-        barcodeCaptureSession?.startRunning()
-
         NSLayoutConstraint.activate([
             barcodeView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
             barcodeView.heightAnchor.constraint(equalToConstant: 100),
@@ -105,13 +102,17 @@ extension ScannerViewController {
         button.addTarget(self, action: #selector(tappedAddISBNButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
-
         NSLayoutConstraint.activate([
             button.widthAnchor.constraint(equalToConstant: 200),
             button.heightAnchor.constraint(equalToConstant: 44),
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 100),
         ])
+
+        // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする
+        view.layoutIfNeeded()
+        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
+        barcodeCaptureSession?.startRunning()
     }
 
     @objc func tappedAddISBNButton() {
