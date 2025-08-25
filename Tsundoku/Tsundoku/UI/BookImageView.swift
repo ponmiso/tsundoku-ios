@@ -13,8 +13,8 @@ struct BookImageView: View {
             } placeholder: {
                 Color.gray
             }
-        case let .filePath(fileURL):
-            if let uiImage = UIImage(contentsOfFile: fileURL.path) {
+        case .filePath:
+            if let url = image?.existingURL, let uiImage = UIImage(contentsOfFile: url.path) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
