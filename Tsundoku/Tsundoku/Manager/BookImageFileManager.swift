@@ -23,14 +23,17 @@ struct BookImageFileManager {
     func moveToFile(from tempURL: URL, for directory: FileManager.SearchPathDirectory = .applicationSupportDirectory) throws -> URL {
         let fileURL = try fileURL(fileName: tempURL.lastPathComponent, for: directory)
 
-        let fileManager = FileManager.default
-
         // すでに存在していれば削除
+        try removeFile(fileURL: fileURL)
+
+        try FileManager.default.moveItem(at: tempURL, to: fileURL)
+        return fileURL
+    }
+
+    func removeFile(fileURL: URL) throws {
+        let fileManager = FileManager.default
         if fileManager.fileExists(atPath: fileURL.path) {
             try fileManager.removeItem(at: fileURL)
         }
-
-        try fileManager.moveItem(at: tempURL, to: fileURL)
-        return fileURL
     }
 }
