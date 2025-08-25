@@ -5,6 +5,8 @@ struct BookListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
     @State private var isPresentedBookAddView = false
+    @State private var isPresentedDeleteBookAlert = false
+    @State private var deleteBook: DeletedBook?
 
     var body: some View {
         NavigationStack {
@@ -22,6 +24,12 @@ struct BookListView: View {
         }
         .sheet(isPresented: $isPresentedBookAddView) {
             BookAddView()
+        }
+        .alert("Do you really want to delete it?", isPresented: $isPresentedDeleteBookAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                deleteBooks()
+            }
         }
     }
 }
@@ -71,7 +79,7 @@ extension BookListView {
                     bookView(book)
                 }
                 .onDelete {
-                    deleteBooks(at: $0, in: books)
+                    onDeleteBooks(at: $0, in: books)
                 }
             }
         }
@@ -109,19 +117,31 @@ extension BookListView {
         isPresentedBookAddView = true
     }
 
-    private func deleteBooks(at offsets: IndexSet, in books: [Book]) {
+    private func onDeleteBooks(at offsets: IndexSet, in books: [Book]) {
+        deleteBook = DeletedBook(offsets: offsets, books: books)
+        isPresentedDeleteBookAlert = true
+    }
+
+    private func deleteBooks() {
+        guard let deleteBook else { return }
         withAnimation {
-            for index in offsets {
-                let bookImage = books[index].image
-                modelContext.delete(books[index])
+            for index in deleteBook.offsets {
+                let bookImage = deleteBook.books[index].image
+                modelContext.delete(deleteBook.books[index])
 
                 // 削除に失敗しても動作に影響がないのでエラーは無視
                 if let bookImage, case let .filePath(url) = bookImage {
                     try? BookImageFileManager().removeFile(fileURL: url)
                 }
             }
+            self.deleteBook = nil
         }
     }
+}
+
+struct DeletedBook {
+    let offsets: IndexSet
+    let books: [Book]
 }
 
 #Preview {
