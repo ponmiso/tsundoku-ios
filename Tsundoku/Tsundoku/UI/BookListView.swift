@@ -7,6 +7,7 @@ struct BookListView: View {
     @State private var isPresentedBookAddView = false
     @State private var isPresentedDeleteBookAlert = false
     @State private var deleteBook: DeletedBook?
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -22,6 +23,7 @@ struct BookListView: View {
                     }
                 }
         }
+        .searchable(text: $searchText)
         .sheet(isPresented: $isPresentedBookAddView) {
             BookAddView()
         }
@@ -35,12 +37,23 @@ struct BookListView: View {
 }
 
 extension BookListView {
+    private var searchedBooks: [Book] {
+        books
+            .filter {
+                if !searchText.isEmpty {
+                    $0.title.contains(searchText)
+                } else {
+                    true
+                }
+            }
+    }
+
     private var readBooks: [Book] {
-        books.filter(\.isRead)
+        searchedBooks.filter(\.isRead)
     }
 
     private var unreadBooks: [Book] {
-        books.filter(\.isUnread)
+        searchedBooks.filter(\.isUnread)
     }
 }
 
