@@ -112,7 +112,13 @@ extension BookListView {
     private func deleteBooks(at offsets: IndexSet, in books: [Book]) {
         withAnimation {
             for index in offsets {
+                let bookImage = books[index].image
                 modelContext.delete(books[index])
+
+                // 削除に失敗しても動作に影響がないのでエラーは無視
+                if let bookImage, case let .filePath(url) = bookImage {
+                    try? BookImageFileManager().removeFile(fileURL: url)
+                }
             }
         }
     }
