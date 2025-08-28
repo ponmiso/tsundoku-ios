@@ -110,7 +110,7 @@ extension BookListView {
                     .lineLimit(3)
                 Spacer()
                 if book.isUnread {
-                    Text("progress: \(book.progressText)")
+                    Text("Progress: \(book.progressText)")
                         .font(.caption)
                 }
             }
