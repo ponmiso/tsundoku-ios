@@ -91,14 +91,14 @@ extension BookAddView {
 
     private func bookStatusView() -> some View {
         VStack(alignment: .leading) {
-            Toggle("Read status", isOn: $isRead)
+            Toggle("Read", isOn: $isRead)
             Text("Page")
             HStack {
-                TextField("10", text: $currentPage)
+                TextField("", text: $currentPage, prompt: Text(verbatim: "10"))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
-                Text("/")
-                TextField("100", text: $maxPage)
+                Text(verbatim: "/")
+                TextField("", text: $maxPage, prompt: Text(verbatim: "100"))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
             }
