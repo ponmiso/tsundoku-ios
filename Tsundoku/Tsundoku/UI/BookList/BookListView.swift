@@ -23,7 +23,7 @@ struct BookListView: View {
                         EditButton()
                     }
                     ToolbarItem {
-                        Button(action: addBook) {
+                        Button(action: onAddBook) {
                             Label("Add Book", systemImage: "plus")
                         }
                     }
@@ -43,6 +43,15 @@ struct BookListView: View {
             }
         }
         .onChange(of: scene.shortcutItem) {
+            switch scene.shortcutItem {
+            case .add:
+                presentedScreen.removeAll()
+                showBookAddView()
+
+                scene.shortcutItem = nil
+            case .none:
+                break
+            }
         }
     }
 }
@@ -77,7 +86,7 @@ extension BookListView {
                 } description: {
                     Text("Please add the book")
                 } actions: {
-                    Button("Add Book", systemImage: "plus", action: addBook)
+                    Button("Add Book", systemImage: "plus", action: onAddBook)
                         .padding(8)
                         .background(.cyan)
                         .foregroundStyle(.white)
@@ -135,7 +144,11 @@ extension BookListView {
 }
 
 extension BookListView {
-    private func addBook() {
+    private func onAddBook() {
+        showBookAddView()
+    }
+
+    private func showBookAddView() {
         isPresentedBookAddView = true
     }
 
