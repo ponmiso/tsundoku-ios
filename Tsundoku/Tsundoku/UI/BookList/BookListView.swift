@@ -2,6 +2,8 @@ import SwiftData
 import SwiftUI
 
 struct BookListView: View {
+    typealias DeletedBook = BookListDeletedBook
+
     @EnvironmentObject var scene: SceneDelegate
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
@@ -154,11 +156,6 @@ extension BookListView {
             self.deleteBook = nil
         }
     }
-}
-
-struct DeletedBook {
-    let offsets: IndexSet
-    let books: [Book]
 }
 
 #Preview {
