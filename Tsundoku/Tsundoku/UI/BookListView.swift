@@ -2,8 +2,10 @@ import SwiftData
 import SwiftUI
 
 struct BookListView: View {
+    @EnvironmentObject var scene: SceneDelegate
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
+
     @State private var isPresentedBookAddView = false
     @State private var isPresentedDeleteBookAlert = false
     @State private var deleteBook: DeletedBook?
@@ -32,6 +34,8 @@ struct BookListView: View {
             Button("Delete", role: .destructive) {
                 deleteBooks()
             }
+        }
+        .onChange(of: scene.shortcutItem) {
         }
     }
 }
