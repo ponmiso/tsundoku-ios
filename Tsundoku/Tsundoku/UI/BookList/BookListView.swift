@@ -3,18 +3,20 @@ import SwiftUI
 
 struct BookListView: View {
     typealias DeletedBook = BookListDeletedBook
+    typealias Screen = BookListScreen
 
     @EnvironmentObject var scene: SceneDelegate
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
 
+    @State private var presentedScreen: [Screen] = []
     @State private var isPresentedBookAddView = false
     @State private var isPresentedDeleteBookAlert = false
     @State private var deleteBook: DeletedBook?
     @State private var searchText = ""
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $presentedScreen) {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -25,6 +27,9 @@ struct BookListView: View {
                             Label("Add Book", systemImage: "plus")
                         }
                     }
+                }
+                .navigationDestination(for: Screen.self) { screen in
+                    BookListViewRooter().coordinator(screen)
                 }
         }
         .searchable(text: $searchText)
@@ -105,9 +110,7 @@ extension BookListView {
     }
 
     private func bookView(_ book: Book) -> some View {
-        NavigationLink {
-            BookDetailsView(book)
-        } label: {
+        NavigationLink(value: Screen.bookDetail(book)) {
             HStack {
                 BookImageView(image: book.image)
                     .frame(width: 80, height: 80)
