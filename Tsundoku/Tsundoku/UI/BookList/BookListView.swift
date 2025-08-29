@@ -5,7 +5,7 @@ struct BookListView: View {
     typealias DeletedBook = BookListDeletedBook
     typealias Screen = BookListScreen
 
-    @EnvironmentObject var scene: SceneDelegate
+    @StateObject var shortcutActionState = ShortcutActionState.shared
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
 
@@ -42,16 +42,11 @@ struct BookListView: View {
                 deleteBooks()
             }
         }
-        .onChange(of: scene.shortcutItem) {
-            switch scene.shortcutItem {
-            case .add:
-                presentedScreen.removeAll()
-                showBookAddView()
-
-                scene.shortcutItem = nil
-            case .none:
-                break
-            }
+        .onAppear {
+            coordinatorShortcutItem(shortcutActionState.shortcutItem)
+        }
+        .onChange(of: shortcutActionState.shortcutItem) {
+            coordinatorShortcutItem(shortcutActionState.shortcutItem)
         }
     }
 }
@@ -170,6 +165,18 @@ extension BookListView {
                 }
             }
             self.deleteBook = nil
+        }
+    }
+
+    private func coordinatorShortcutItem(_ item: ShortcutItem?) {
+        switch item {
+        case .add:
+            presentedScreen.removeAll()
+            showBookAddView()
+
+            shortcutActionState.setShortcutItem(from: nil)
+        case .none:
+            break
         }
     }
 }
