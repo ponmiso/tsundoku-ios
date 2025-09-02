@@ -31,6 +31,17 @@
         }
       }
     },
+    "Add Book in the %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で本を追加する"
+          }
+        }
+      }
+    },
     "Book Information" : {
       "localizations" : {
         "ja" : {
