@@ -36,15 +36,6 @@ class ScannerViewController: UIViewController {
 
 extension ScannerViewController {
     private func observe() {
-        viewModel.toggleScanning
-            .sink { [weak self] isScanning in
-                if isScanning {
-                    self?.barcodeCaptureSession?.startRunning()
-                } else {
-                    self?.barcodeCaptureSession?.stopRunning()
-                }
-            }
-            .store(in: &cancellables)
         viewModel.didFetchBook
             .sink { [weak self] book in
                 self?.dismiss(animated: true) { [weak self] in
@@ -60,6 +51,7 @@ extension ScannerViewController {
 
         barcodeCaptureSession?.codePublisher
             .sink { [weak self] code in
+                self?.barcodeCaptureSession?.stopRunning()
                 self?.viewModel.didFind(code: code)
                 self?.showCode(code)
             }

@@ -3,12 +3,16 @@ import Foundation
 
 @MainActor
 final class ScannerViewModel {
-    let toggleScanning = PassthroughSubject<Bool, Never>()
-
     let didFetchBook = PassthroughSubject<Book, Never>()
     let didFailedFetchBook = PassthroughSubject<Error, Never>()
 
+    private let getBookUseCase: GetBookUserCaseProtocol
+
     private var isFetching = false
+
+    init(getBookUseCase: GetBookUserCase = GetBookUserCase()) {
+        self.getBookUseCase = getBookUseCase
+    }
 }
 
 extension ScannerViewModel {
@@ -21,50 +25,20 @@ extension ScannerViewModel {
     }
 
     private func fetchBook(code: String) {
-        if isFetching {
-            return
-        }
-
-        // ISBN-13は978か979始まり
-        if code.count != 13 {
-            return
-        }
-        if !code.hasPrefix("978") && !code.hasPrefix("979") {
-            return
-        }
-
-        isFetching = true
-        toggleScanning.send(false)
-
         Task {
+            if isFetching {
+                return
+            }
+            isFetching = true
+
             do {
-                let response = try await OpenBDAPI().getRepositories(isbn: code)
-                let maxPage = response.page
-                let currentPage = maxPage == nil ? nil : 0
-                let image: BookImage? =
-                    if let url = response.thumbnailUrl {
-                        BookImage.url(url)
-                    } else {
-                        nil
-                    }
-                didFetchBook.send(Book(title: response.title ?? "", currentPage: currentPage, maxPage: maxPage, image: image))
-                isFetching = true
+                let input = GetBookInputData(isbn13: code)
+                let output = try await getBookUseCase.execute(input: input)
+                didFetchBook.send(Book(title: output.title, currentPage: output.currentPage, maxPage: output.maxPage, image: output.image))
+                isFetching = false
             } catch {
                 didFailedFetchBook.send(error)
                 isFetching = false
-            }
-        }
-    }
-}
-
-extension ScannerViewModel {
-    enum ScanError: Error, LocalizedError {
-        case invalidCode(code: String)
-
-        var errorDescription: String? {
-            switch self {
-            case let .invalidCode(code):
-                return "Invalid barcode.Read codes beginning with 978 or 979.\nCodes read: \(code)"
             }
         }
     }
