@@ -102,6 +102,17 @@
         }
       }
     },
+    "Enter isbn13. You do not have to enter it." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "isbn13を入力してください。入力しなくても良いです。"
+          }
+        }
+      }
+    },
     "Harry Potter" : {
       "localizations" : {
         "ja" : {

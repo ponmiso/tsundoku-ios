@@ -11,6 +11,7 @@ struct BookListView: View {
 
     @State private var presentedScreen: [Screen] = []
     @State private var isPresentedBookAddView = false
+    @State private var isbn13ForBookAddView: String?
     @State private var isPresentedDeleteBookAlert = false
     @State private var deleteBook: DeletedBook?
     @State private var searchText = ""
@@ -34,8 +35,17 @@ struct BookListView: View {
         }
         .searchable(text: $searchText)
         .sheet(isPresented: $isPresentedBookAddView) {
-            BookAddView()
+            BookAddView(isbn13: isbn13ForBookAddView)
         }
+        .onChange(
+            of: isPresentedBookAddView,
+            { oldValue, newValue in
+                // 画面が閉じられた時に、ショートカットから渡された値を初期化する
+                if oldValue, !newValue {
+                    isbn13ForBookAddView = nil
+                }
+            }
+        )
         .alert("Do you really want to delete it?", isPresented: $isPresentedDeleteBookAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -143,7 +153,8 @@ extension BookListView {
         showBookAddView()
     }
 
-    private func showBookAddView() {
+    private func showBookAddView(_ isbn13: String? = nil) {
+        isbn13ForBookAddView = isbn13
         isPresentedBookAddView = true
     }
 
@@ -170,9 +181,9 @@ extension BookListView {
 
     private func coordinatorShortcutItem(_ item: ShortcutItem?) {
         switch item {
-        case .add:
+        case let .add(isbn13):
             presentedScreen.removeAll()
-            showBookAddView()
+            showBookAddView(isbn13)
 
             shortcutActionState.setShortcutItem(from: nil)
         case .none:

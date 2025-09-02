@@ -6,6 +6,8 @@ struct BookAddView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
+    private let boundIsbn13: String?
+
     @State private var image: BookImage?
     @State private var title = ""
     @State private var didInputedTitle = false
@@ -16,6 +18,10 @@ struct BookAddView: View {
     @State private var isPresentedScanner = false
     @State private var isPresentedPhotosPicker = false
     @State private var selectedPickerItem: PhotosPickerItem?
+
+    init(isbn13: String? = nil) {
+        boundIsbn13 = isbn13
+    }
 
     var body: some View {
         NavigationStack {
@@ -63,6 +69,9 @@ struct BookAddView: View {
         }
         .onChange(of: title) {
             didInputedTitle = true
+        }
+        .onAppear {
+            // TODO: isbnを使ってAPIをコール
         }
     }
 }

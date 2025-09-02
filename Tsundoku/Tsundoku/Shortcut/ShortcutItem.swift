@@ -1,5 +1,5 @@
-enum ShortcutItem {
-    case add
+enum ShortcutItem: Equatable {
+    case add(isbn13: String?)
 }
 
 extension ShortcutItem: RawRepresentable {
@@ -8,7 +8,7 @@ extension ShortcutItem: RawRepresentable {
     init?(rawValue: String?) {
         switch rawValue {
         case "jp.ponmiso.Tsundoku.add":
-            self = .add
+            self = .add(isbn13: nil)
         default:
             return nil
         }
