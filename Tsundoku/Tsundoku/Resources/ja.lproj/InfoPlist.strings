@@ -1,1 +1,4 @@
 "CFBundleDisplayName" = "積読山";
+
+// Home Screen Quick Actions
+"Add Book" = "本を追加する";

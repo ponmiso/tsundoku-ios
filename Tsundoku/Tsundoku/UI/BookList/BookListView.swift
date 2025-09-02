@@ -2,25 +2,34 @@ import SwiftData
 import SwiftUI
 
 struct BookListView: View {
+    typealias DeletedBook = BookListDeletedBook
+    typealias Screen = BookListScreen
+
+    @StateObject var shortcutActionState = ShortcutActionState.shared
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
+
+    @State private var presentedScreen: [Screen] = []
     @State private var isPresentedBookAddView = false
     @State private var isPresentedDeleteBookAlert = false
     @State private var deleteBook: DeletedBook?
     @State private var searchText = ""
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $presentedScreen) {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         EditButton()
                     }
                     ToolbarItem {
-                        Button(action: addBook) {
+                        Button(action: onAddBook) {
                             Label("Add Book", systemImage: "plus")
                         }
                     }
+                }
+                .navigationDestination(for: Screen.self) { screen in
+                    BookListViewRooter().coordinator(screen)
                 }
         }
         .searchable(text: $searchText)
@@ -32,6 +41,12 @@ struct BookListView: View {
             Button("Delete", role: .destructive) {
                 deleteBooks()
             }
+        }
+        .onAppear {
+            coordinatorShortcutItem(shortcutActionState.shortcutItem)
+        }
+        .onChange(of: shortcutActionState.shortcutItem) {
+            coordinatorShortcutItem(shortcutActionState.shortcutItem)
         }
     }
 }
@@ -66,7 +81,7 @@ extension BookListView {
                 } description: {
                     Text("Please add the book")
                 } actions: {
-                    Button("Add Book", systemImage: "plus", action: addBook)
+                    Button("Add Book", systemImage: "plus", action: onAddBook)
                         .padding(8)
                         .background(.cyan)
                         .foregroundStyle(.white)
@@ -99,9 +114,7 @@ extension BookListView {
     }
 
     private func bookView(_ book: Book) -> some View {
-        NavigationLink {
-            BookDetailsView(book)
-        } label: {
+        NavigationLink(value: Screen.bookDetail(book)) {
             HStack {
                 BookImageView(image: book.image)
                     .frame(width: 80, height: 80)
@@ -126,7 +139,11 @@ extension BookListView {
 }
 
 extension BookListView {
-    private func addBook() {
+    private func onAddBook() {
+        showBookAddView()
+    }
+
+    private func showBookAddView() {
         isPresentedBookAddView = true
     }
 
@@ -150,11 +167,18 @@ extension BookListView {
             self.deleteBook = nil
         }
     }
-}
 
-struct DeletedBook {
-    let offsets: IndexSet
-    let books: [Book]
+    private func coordinatorShortcutItem(_ item: ShortcutItem?) {
+        switch item {
+        case .add:
+            presentedScreen.removeAll()
+            showBookAddView()
+
+            shortcutActionState.setShortcutItem(from: nil)
+        case .none:
+            break
+        }
+    }
 }
 
 #Preview {

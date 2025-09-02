@@ -42,26 +42,24 @@ struct BookDetailsView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Book Information")
-                    .font(.headline)
-                bookInfoView()
+        VStack(alignment: .leading) {
+            Text("Book Information")
+                .font(.headline)
+            bookInfoView()
 
-                Spacer().frame(height: 24)
+            Spacer().frame(height: 24)
 
-                Text("Book Status")
-                    .font(.headline)
-                bookStatusView()
+            Text("Book Status")
+                .font(.headline)
+            bookStatusView()
 
-                Spacer()
-            }
-            .padding()
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Update") {
-                        updateBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
-                    }
+            Spacer()
+        }
+        .padding()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Update") {
+                    updateBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
                 }
             }
         }
@@ -74,7 +72,6 @@ struct BookDetailsView: View {
         .onChange(of: selectedPickerItem) { _, newValue in
             onChangePhotosPickerItem(newValue)
         }
-
     }
 }
 

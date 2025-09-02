@@ -3,6 +3,8 @@ import SwiftUI
 
 @main
 struct TsundokuApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Book.self
