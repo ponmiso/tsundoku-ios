@@ -54,6 +54,11 @@ struct BookAddView: View {
             }
         }
         .photosPicker(isPresented: $viewModel.isPresentedPhotosPicker, selection: $viewModel.selectedPickerItem, matching: .images)
+        .alert("", isPresented: $viewModel.isPresentedFetchBookErrorAlert, presenting: viewModel.fetchBookErrorReason) { _ in
+            Button("OK") {}
+        } message: { reason in
+            Text(reason.error.localizedDescription)
+        }
         .onChange(of: viewModel.selectedPickerItem) { _, newValue in
             viewModel.onChangePhotosPickerItem(newValue)
         }

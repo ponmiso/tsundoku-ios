@@ -6,6 +6,8 @@ import SwiftUI
 
 @MainActor
 final class BookAddViewModel: ObservableObject {
+    typealias FetchBookErrorReason = BookAddFetchBookErrorReason
+
     private let getBookUseCase: GetBookUserCaseProtocol
     private var isFetching = false
     private var boundIsbn13: String?
@@ -20,6 +22,8 @@ final class BookAddViewModel: ObservableObject {
     @Published var isPresentedScanner = false
     @Published var isPresentedPhotosPicker = false
     @Published var selectedPickerItem: PhotosPickerItem?
+    @Published var isPresentedFetchBookErrorAlert = false
+    @Published var fetchBookErrorReason: FetchBookErrorReason?
 
     @Published var actionPublisher: PassthroughSubject<Action, Never> = .init()
 
@@ -117,7 +121,8 @@ extension BookAddViewModel {
             maxPage = String(output.maxPage)
             isFetching = false
         } catch {
-            // TODO: アラート表示
+            fetchBookErrorReason = FetchBookErrorReason(error: error)
+            isPresentedFetchBookErrorAlert = true
             isFetching = false
         }
     }
