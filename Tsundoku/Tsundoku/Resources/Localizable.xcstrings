@@ -31,6 +31,17 @@
         }
       }
     },
+    "Add Book in the %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で本を追加する"
+          }
+        }
+      }
+    },
     "Book Information" : {
       "localizations" : {
         "ja" : {
@@ -91,6 +102,17 @@
         }
       }
     },
+    "Enter isbn13. You do not have to enter it." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "isbn13を入力してください。入力しなくても良いです。"
+          }
+        }
+      }
+    },
     "Harry Potter" : {
       "localizations" : {
         "ja" : {
@@ -117,6 +139,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Open %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を開く"
+          }
+        }
+      }
+    },
+    "Open Application" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開く"
           }
         }
       }

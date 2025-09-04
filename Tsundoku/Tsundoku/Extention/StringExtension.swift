@@ -1,6 +1,15 @@
 import Foundation
 
 extension String {
+    /// value=nil の場合は空文字を返す
+    init(_ value: Int?) {
+        if let value {
+            self = String(value)
+        } else {
+            self = ""
+        }
+    }
+
     var toDateFromYYYYMMDD: Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd"
