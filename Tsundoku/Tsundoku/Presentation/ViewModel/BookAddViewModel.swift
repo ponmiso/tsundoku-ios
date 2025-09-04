@@ -51,7 +51,7 @@ extension BookAddViewModel {
     }
 
     func task() async {
-        guard let boundIsbn13 else { return }
+        guard let boundIsbn13, !boundIsbn13.isEmpty else { return }
         await fetchBook(code: boundIsbn13)
         self.boundIsbn13 = nil
     }
