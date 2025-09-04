@@ -6,21 +6,11 @@ struct BookAddView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    private let boundIsbn13: String?
-
-    @State private var image: BookImage?
-    @State private var title = ""
-    @State private var didInputedTitle = false
-    @State private var isRead = false
-    @State private var currentPage = ""
-    @State private var maxPage = ""
-
-    @State private var isPresentedScanner = false
-    @State private var isPresentedPhotosPicker = false
-    @State private var selectedPickerItem: PhotosPickerItem?
+    @StateObject private var viewModel: BookAddViewModel
 
     init(isbn13: String? = nil) {
-        boundIsbn13 = isbn13
+        let viewModel = BookAddViewModel(isbn13: isbn13)
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -42,36 +32,39 @@ struct BookAddView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("", systemImage: "barcode") {
-                        isPresentedScanner = true
+                        viewModel.onTapScanner()
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
-                        addBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: image)
+                        viewModel.onTapAdd(context: modelContext)
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
-                        dismiss()
+                        viewModel.onTapCancel()
                     }
                 }
             }
         }
-        .sheet(isPresented: $isPresentedScanner) {
+        .sheet(isPresented: $viewModel.isPresentedScanner) {
             BarcodeScannerView { book in
-                image = book.image
-                title = book.title
+                viewModel.image = book.image
+                viewModel.title = book.title
             }
         }
-        .photosPicker(isPresented: $isPresentedPhotosPicker, selection: $selectedPickerItem, matching: .images)
-        .onChange(of: selectedPickerItem) { _, newValue in
-            onChangePhotosPickerItem(newValue)
+        .photosPicker(isPresented: $viewModel.isPresentedPhotosPicker, selection: $viewModel.selectedPickerItem, matching: .images)
+        .onChange(of: viewModel.selectedPickerItem) { _, newValue in
+            viewModel.onChangePhotosPickerItem(newValue)
         }
-        .onChange(of: title) {
-            didInputedTitle = true
+        .onChange(of: viewModel.title) {
+            viewModel.onChangeTitle()
         }
         .onAppear {
             // TODO: isbnを使ってAPIをコール
+        }
+        .onReceive(viewModel.actionPublisher) { action in
+            onReceiveAction(action)
         }
     }
 }
@@ -81,16 +74,16 @@ extension BookAddView {
         VStack(alignment: .leading) {
             Text("Thumbnail")
             Button {
-                isPresentedPhotosPicker = true
+                viewModel.onTapThumbnail()
             } label: {
-                BookImageView(image: image)
+                BookImageView(image: viewModel.image)
                     .frame(width: 120, height: 120)
             }
 
             Text("Title")
-            TextField("Harry Potter", text: $title)
+            TextField("Harry Potter", text: $viewModel.title)
                 .textFieldStyle(.roundedBorder)
-            if title.isEmpty, didInputedTitle {
+            if viewModel.shouldShowTitleError {
                 Text("Please enter a title")
                     .font(.caption)
                     .foregroundStyle(.red)
@@ -100,18 +93,18 @@ extension BookAddView {
 
     private func bookStatusView() -> some View {
         VStack(alignment: .leading) {
-            Toggle("Read", isOn: $isRead)
+            Toggle("Read", isOn: $viewModel.isRead)
             Text("Page")
             HStack {
-                TextField("", text: $currentPage, prompt: Text(verbatim: "10"))
+                TextField("", text: $viewModel.currentPage, prompt: Text(verbatim: "10"))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
                 Text(verbatim: "/")
-                TextField("", text: $maxPage, prompt: Text(verbatim: "100"))
+                TextField("", text: $viewModel.maxPage, prompt: Text(verbatim: "100"))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
             }
-            if isOverPage {
+            if viewModel.isOverPage {
                 Text("Do not exceed the maximum number of pages")
                     .font(.caption)
                     .foregroundStyle(.red)
@@ -121,56 +114,11 @@ extension BookAddView {
 }
 
 extension BookAddView {
-    private func addBook(title: String, isRead: Bool, currentPage: String, maxPage: String, image: BookImage?) {
-        if title.isEmpty || isOverPage { return }
-
-        // 端末の画像が選択されている場合は、アプリ領域に永続的に画像を保存してそのファイルパスを保存する
-        let newImage: BookImage?
-        if let image, case let .filePath(url) = image {
-            do {
-                let newURL = try BookImageFileManager().moveToFile(from: url)
-                newImage = BookImage.filePath(newURL)
-            } catch {
-                // TODO: アラート表示してそのまま保存するかどうか選ばせる
-                newImage = nil
-            }
-        } else {
-            newImage = nil
+    private func onReceiveAction(_ action: BookAddViewModel.Action) {
+        switch action {
+        case .dismiss:
+            dismiss()
         }
-
-        let currentPage = Int(currentPage)
-        let maxPage = Int(maxPage)
-        let newBook = Book(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: newImage)
-        modelContext.insert(newBook)
-        dismiss()
-    }
-}
-
-extension BookAddView {
-    private func onChangePhotosPickerItem(_ item: PhotosPickerItem?) {
-        Task {
-            guard let item else {
-                return
-            }
-            let data = try? await item.loadTransferable(type: Data.self)
-            guard let data else {
-                return
-            }
-            let url = try? await BookImageFileManager().saveTempPhotosPickerItem(data)
-            guard let url else {
-                return
-            }
-            image = .filePath(url)
-        }
-    }
-}
-
-extension BookAddView {
-    private var isOverPage: Bool {
-        guard let currentPage = Double(currentPage), let maxPage = Double(maxPage) else {
-            return false
-        }
-        return currentPage > maxPage
     }
 }
 
