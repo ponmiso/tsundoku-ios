@@ -6,7 +6,9 @@ import SwiftUI
 
 @MainActor
 final class BookAddViewModel: ObservableObject {
-    private let boundIsbn13: String?
+    private let getBookUseCase: GetBookUserCaseProtocol
+    private var isFetching = false
+    private var boundIsbn13: String?
 
     @Published var image: BookImage?
     @Published var title = ""
@@ -21,8 +23,9 @@ final class BookAddViewModel: ObservableObject {
 
     @Published var actionPublisher: PassthroughSubject<Action, Never> = .init()
 
-    init(isbn13: String? = nil) {
+    init(isbn13: String? = nil, getBookUseCase: GetBookUserCase = GetBookUserCase()) {
         boundIsbn13 = isbn13
+        self.getBookUseCase = getBookUseCase
     }
 }
 
@@ -41,6 +44,12 @@ extension BookAddViewModel {
 
     func onTapThumbnail() {
         isPresentedPhotosPicker = true
+    }
+
+    func task() async {
+        guard let boundIsbn13 else { return }
+        await fetchBook(code: boundIsbn13)
+        self.boundIsbn13 = nil
     }
 }
 
@@ -91,6 +100,26 @@ extension BookAddViewModel {
         context.insert(newBook)
 
         actionPublisher.send(.dismiss)
+    }
+
+    private func fetchBook(code: String) async {
+        if isFetching {
+            return
+        }
+        isFetching = true
+
+        do {
+            let input = GetBookInputData(isbn13: code)
+            let output = try await getBookUseCase.execute(input: input)
+            image = output.image
+            title = output.title
+            currentPage = String(output.currentPage)
+            maxPage = String(output.maxPage)
+            isFetching = false
+        } catch {
+            // TODO: アラート表示
+            isFetching = false
+        }
     }
 }
 

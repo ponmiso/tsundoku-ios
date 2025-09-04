@@ -60,8 +60,8 @@ struct BookAddView: View {
         .onChange(of: viewModel.title) {
             viewModel.onChangeTitle()
         }
-        .onAppear {
-            // TODO: isbnを使ってAPIをコール
+        .task {
+            await viewModel.task()
         }
         .onReceive(viewModel.actionPublisher) { action in
             onReceiveAction(action)
