@@ -13,6 +13,7 @@ class ScannerViewController: UIViewController {
     private let barcodeCaptureSession = BarcodeCaptureSession()
 
     private var codeLabel: UILabel?
+    private var hideCodeAnimator: UIViewPropertyAnimator?
     private var cancellables: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
@@ -132,8 +133,11 @@ extension ScannerViewController {
             if let text = codeLabel.text, text == code {
                 return
             } else {
-                codeLabel.isHidden = true
+                hideCodeAnimator?.stopAnimation(true)
+                hideCodeAnimator?.finishAnimation(at: .current)
+                codeLabel.alpha = 0
                 codeLabel.removeFromSuperview()
+                self.codeLabel = nil
             }
         }
         let label = defalutCodeLabel
@@ -141,19 +145,17 @@ extension ScannerViewController {
         view.addSubview(label)
         codeLabel = label
 
-        label.alpha = 0
-        UIView.animate(withDuration: 0.3) {
-            label.alpha = 1
+        hideCodeAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .easeInOut) { [weak self] in
+            self?.codeLabel?.alpha = 0
         }
-        UIView.animate(
-            withDuration: 1.0, delay: 3.0,
-            animations: {
-                label.alpha = 0
-            },
-            completion: { _ in
-                label.removeFromSuperview()
-                self.codeLabel = nil
-            })
+        hideCodeAnimator?.addCompletion { [weak self] position in
+            if position != .end {
+                return
+            }
+            self?.codeLabel?.removeFromSuperview()
+            self?.codeLabel = nil
+        }
+        hideCodeAnimator?.startAnimation(afterDelay: 3.0)
     }
 
     private var defalutCodeLabel: UILabel {
