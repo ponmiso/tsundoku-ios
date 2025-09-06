@@ -111,23 +111,42 @@ extension ScannerViewController {
         let barcodeView = UIView()
         barcodeView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(barcodeView)
-        NSLayoutConstraint.activate([
-            barcodeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            barcodeView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            barcodeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            barcodeView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
         self.barcodeView = barcodeView
 
         let lineView = UIView()
         lineView.backgroundColor = .red.withAlphaComponent(0.5)
         lineView.translatesAutoresizingMaskIntoConstraints = false
         barcodeView.addSubview(lineView)
+
+        let notesView = UILabel()
+        notesView.text = String(localized: "Read the 13-digit ISBN.ISBNs begin with 978 or 979.")
+        notesView.textColor = .darkGray
+        notesView.textAlignment = .center
+        notesView.numberOfLines = 0
+        notesView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(notesView)
+
+        NSLayoutConstraint.activate([
+            barcodeView.heightAnchor.constraint(lessThanOrEqualToConstant: 500),
+            barcodeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            barcodeView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            barcodeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+
         NSLayoutConstraint.activate([
             lineView.heightAnchor.constraint(equalToConstant: 2),
             lineView.leadingAnchor.constraint(equalTo: barcodeView.leadingAnchor, constant: 50),
             lineView.trailingAnchor.constraint(equalTo: barcodeView.trailingAnchor, constant: -50),
             lineView.topAnchor.constraint(equalTo: barcodeView.topAnchor, constant: 100),
+        ])
+
+        let bottomAnchor = notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
+        bottomAnchor.priority = .defaultLow
+        NSLayoutConstraint.activate([
+            notesView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            notesView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            notesView.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 16),
+            bottomAnchor,
         ])
 
         // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする

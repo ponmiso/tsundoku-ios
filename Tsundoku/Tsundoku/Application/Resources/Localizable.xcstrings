@@ -226,6 +226,23 @@
         }
       }
     },
+    "Read the 13-digit ISBN.ISBNs begin with 978 or 979." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read the 13-digit ISBN.\nISBNs begin with 978 or 979."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "13桁のISBNを読み取ってください。\nISBNは978か979始まりです。"
+          }
+        }
+      }
+    },
     "Thumbnail" : {
       "localizations" : {
         "ja" : {
