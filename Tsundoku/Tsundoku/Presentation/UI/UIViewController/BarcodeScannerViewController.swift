@@ -108,6 +108,17 @@ extension ScannerViewController {
             barcodeView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
+        let lineView = UIView()
+        lineView.backgroundColor = .red.withAlphaComponent(0.5)
+        lineView.translatesAutoresizingMaskIntoConstraints = false
+        barcodeView.addSubview(lineView)
+        NSLayoutConstraint.activate([
+            lineView.heightAnchor.constraint(equalToConstant: 2),
+            lineView.leadingAnchor.constraint(equalTo: barcodeView.leadingAnchor, constant: 50),
+            lineView.trailingAnchor.constraint(equalTo: barcodeView.trailingAnchor, constant: -50),
+            lineView.topAnchor.constraint(equalTo: barcodeView.topAnchor, constant: 100),
+        ])
+
         // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする
         view.layoutIfNeeded()
         barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
