@@ -12,8 +12,11 @@ class ScannerViewController: UIViewController {
     private let viewModel = ScannerViewModel()
     private let barcodeCaptureSession = BarcodeCaptureSession()
 
+    private var barcodeView: UIView!
     private var codeLabel: UILabel?
     private var hideCodeAnimator: UIViewPropertyAnimator?
+    private var barcodeFrameView: UIView?
+    private var hideBarcodeFrameAnimator: UIViewPropertyAnimator?
     private var cancellables: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
@@ -47,6 +50,12 @@ extension ScannerViewController {
         viewModel.didFailedFetchBook
             .sink { [weak self] error in
                 self?.showAlert(error)
+            }
+            .store(in: &cancellables)
+
+        barcodeCaptureSession?.framePublisher
+            .sink { [weak self] frame in
+                self?.showCodeFrame(frame)
             }
             .store(in: &cancellables)
 
@@ -108,6 +117,7 @@ extension ScannerViewController {
             barcodeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             barcodeView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        self.barcodeView = barcodeView
 
         let lineView = UIView()
         lineView.backgroundColor = .red.withAlphaComponent(0.5)
@@ -128,6 +138,31 @@ extension ScannerViewController {
 }
 
 extension ScannerViewController {
+    private func showCodeFrame(_ frame: CGRect) {
+        hideBarcodeFrameAnimator?.stopAnimation(true)
+        hideBarcodeFrameAnimator?.finishAnimation(at: .current)
+        barcodeFrameView?.alpha = 0
+        barcodeFrameView?.removeFromSuperview()
+
+        let frameView = UIView(frame: frame)
+        frameView.layer.borderWidth = 1.0
+        frameView.layer.borderColor = UIColor.blue.cgColor
+        barcodeView.addSubview(frameView)
+        barcodeFrameView = frameView
+
+        hideBarcodeFrameAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .easeInOut) { [weak self] in
+            self?.barcodeFrameView?.alpha = 0
+        }
+        hideBarcodeFrameAnimator?.addCompletion { [weak self] position in
+            if position != .end {
+                return
+            }
+            self?.barcodeFrameView?.removeFromSuperview()
+            self?.barcodeFrameView = nil
+        }
+        hideBarcodeFrameAnimator?.startAnimation(afterDelay: 1.0)
+    }
+
     private func showCode(_ code: String) {
         if let codeLabel {
             if let text = codeLabel.text, text == code {
