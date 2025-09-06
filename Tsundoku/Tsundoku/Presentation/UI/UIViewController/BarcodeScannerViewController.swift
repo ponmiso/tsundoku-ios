@@ -72,42 +72,14 @@ extension ScannerViewController {
 extension ScannerViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didCancelTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: String(localized: "Manually"), style: .plain, target: self, action: #selector(didManuallyTapped))
     }
 
     @objc func didCancelTapped() {
         dismiss(animated: true, completion: nil)
     }
 
-    private func setupChildrenView() {
-        let barcodeView = UIView()
-        barcodeView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(barcodeView)
-        NSLayoutConstraint.activate([
-            barcodeView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            barcodeView.heightAnchor.constraint(equalToConstant: 100),
-            barcodeView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            barcodeView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-        ])
-
-        let button = UIButton(type: .system)
-        button.setTitle("Enter ISBNs manually", for: .normal)
-        button.addTarget(self, action: #selector(tappedAddISBNButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 200),
-            button.heightAnchor.constraint(equalToConstant: 44),
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 100),
-        ])
-
-        // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする
-        view.layoutIfNeeded()
-        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
-        barcodeCaptureSession?.startRunning()
-    }
-
-    @objc func tappedAddISBNButton() {
+    @objc func didManuallyTapped() {
         let alert = UIAlertController(title: nil, message: "Enter ISBN", preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "9784780802047"
@@ -123,6 +95,23 @@ extension ScannerViewController {
         alert.addAction(okAction)
         alert.addAction(cancelAction)
         present(alert, animated: true, completion: nil)
+    }
+
+    private func setupChildrenView() {
+        let barcodeView = UIView()
+        barcodeView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(barcodeView)
+        NSLayoutConstraint.activate([
+            barcodeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            barcodeView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            barcodeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            barcodeView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+
+        // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする
+        view.layoutIfNeeded()
+        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
+        barcodeCaptureSession?.startRunning()
     }
 }
 
