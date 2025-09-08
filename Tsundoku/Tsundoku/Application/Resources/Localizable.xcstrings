@@ -243,6 +243,17 @@
         }
       }
     },
+    "See more" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もっと見る"
+          }
+        }
+      }
+    },
     "Thumbnail" : {
       "localizations" : {
         "ja" : {
