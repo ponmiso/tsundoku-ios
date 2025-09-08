@@ -1,6 +1,6 @@
 import Foundation
 
-struct BookListDeletedBook {
+struct BookTopDeletedBook {
     let offsets: IndexSet
     let books: [Book]
 }

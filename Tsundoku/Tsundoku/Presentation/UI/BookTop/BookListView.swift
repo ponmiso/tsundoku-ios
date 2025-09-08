@@ -1,9 +1,9 @@
 import SwiftData
 import SwiftUI
 
-struct BookListView: View {
-    typealias DeletedBook = BookListDeletedBook
-    typealias Screen = BookListScreen
+struct BookTopView: View {
+    typealias DeletedBook = BookTopDeletedBook
+    typealias Screen = BookTopScreen
 
     @StateObject var shortcutActionState = ShortcutActionState.shared
     @Environment(\.modelContext) private var modelContext
@@ -30,7 +30,7 @@ struct BookListView: View {
                     }
                 }
                 .navigationDestination(for: Screen.self) { screen in
-                    BookListViewRooter().coordinator(screen)
+                    BookTopViewRooter().coordinator(screen)
                 }
         }
         .searchable(text: $searchText)
@@ -61,7 +61,7 @@ struct BookListView: View {
     }
 }
 
-extension BookListView {
+extension BookTopView {
     private var searchedBooks: [Book] {
         books
             .filter {
@@ -82,7 +82,7 @@ extension BookListView {
     }
 }
 
-extension BookListView {
+extension BookTopView {
     private func contentView() -> some View {
         Group {
             if books.isEmpty {
@@ -107,7 +107,7 @@ extension BookListView {
     }
 }
 
-extension BookListView {
+extension BookTopView {
     private func bookSectionView(name: LocalizedStringKey, books: [Book]) -> some View {
         Section(name) {
             if books.isEmpty {
@@ -148,7 +148,7 @@ extension BookListView {
     }
 }
 
-extension BookListView {
+extension BookTopView {
     private func onAddBook() {
         showBookAddView()
     }
@@ -203,7 +203,7 @@ extension BookListView {
         context.insert(Book(title: "xxx"))
 
         // コンテナを環境に渡す
-        return BookListView().modelContainer(container)
+        return BookTopView().modelContainer(container)
     } catch {
         return Text("プレビュー生成エラー: \(error.localizedDescription)")
     }
