@@ -3,9 +3,11 @@ import Combine
 import UIKit
 
 final class BarcodeCaptureSession: NSObject {
+    let framePublisher = PassthroughSubject<CGRect, Never>()
     let codePublisher = PassthroughSubject<String, Never>()
 
     private let captureSession: AVCaptureSession
+    private let previewLayer: AVCaptureVideoPreviewLayer
 
     init?(metadataTypes: [AVMetadataObject.ObjectType] = [.ean13]) {
         let session = AVCaptureSession()
@@ -27,6 +29,7 @@ final class BarcodeCaptureSession: NSObject {
         session.addOutput(output)
 
         self.captureSession = session
+        previewLayer = AVCaptureVideoPreviewLayer(session: session)
         super.init()
 
         output.setMetadataObjectsDelegate(self, queue: .main)
@@ -35,7 +38,6 @@ final class BarcodeCaptureSession: NSObject {
 
     @MainActor
     func attachPreviewLayer(to view: UIView) {
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.frame = view.layer.bounds
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.insertSublayer(previewLayer, at: 0)
@@ -64,11 +66,20 @@ extension BarcodeCaptureSession: AVCaptureMetadataOutputObjectsDelegate {
         didOutput metadataObjects: [AVMetadataObject],
         from connection: AVCaptureConnection
     ) {
-        guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
-            let code = object.stringValue
-        else {
+        guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject else {
             return
         }
-        codePublisher.send(code)
+
+        let frame: CGRect =
+            if let transformedObject = previewLayer.transformedMetadataObject(for: object) {
+                transformedObject.bounds
+            } else {
+                .zero
+            }
+        framePublisher.send(frame)
+
+        if let code = object.stringValue {
+            codePublisher.send(code)
+        }
     }
 }

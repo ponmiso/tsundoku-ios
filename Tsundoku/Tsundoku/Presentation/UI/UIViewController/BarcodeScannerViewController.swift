@@ -12,7 +12,11 @@ class ScannerViewController: UIViewController {
     private let viewModel = ScannerViewModel()
     private let barcodeCaptureSession = BarcodeCaptureSession()
 
+    private var barcodeView: UIView!
     private var codeLabel: UILabel?
+    private var hideCodeAnimator: UIViewPropertyAnimator?
+    private var barcodeFrameView: UIView?
+    private var hideBarcodeFrameAnimator: UIViewPropertyAnimator?
     private var cancellables: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
@@ -39,6 +43,7 @@ extension ScannerViewController {
         viewModel.didFetchBook
             .sink { [weak self] book in
                 self?.dismiss(animated: true) { [weak self] in
+                    self?.barcodeCaptureSession?.stopRunning()
                     self?.delegate?.didFind(book: book)
                 }
             }
@@ -49,9 +54,14 @@ extension ScannerViewController {
             }
             .store(in: &cancellables)
 
+        barcodeCaptureSession?.framePublisher
+            .sink { [weak self] frame in
+                self?.showCodeFrame(frame)
+            }
+            .store(in: &cancellables)
+
         barcodeCaptureSession?.codePublisher
             .sink { [weak self] code in
-                self?.barcodeCaptureSession?.stopRunning()
                 self?.viewModel.didFind(code: code)
                 self?.showCode(code)
             }
@@ -60,10 +70,7 @@ extension ScannerViewController {
 
     private func showAlert(_ error: Error) {
         let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            guard let self else { return }
-            barcodeCaptureSession?.startRunning()
-        }
+        let action = UIAlertAction(title: "OK", style: .default)
         alert.addAction(action)
         present(alert, animated: true)
     }
@@ -72,42 +79,14 @@ extension ScannerViewController {
 extension ScannerViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didCancelTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: String(localized: "Manually"), style: .plain, target: self, action: #selector(didManuallyTapped))
     }
 
     @objc func didCancelTapped() {
         dismiss(animated: true, completion: nil)
     }
 
-    private func setupChildrenView() {
-        let barcodeView = UIView()
-        barcodeView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(barcodeView)
-        NSLayoutConstraint.activate([
-            barcodeView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            barcodeView.heightAnchor.constraint(equalToConstant: 100),
-            barcodeView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            barcodeView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-        ])
-
-        let button = UIButton(type: .system)
-        button.setTitle("Enter ISBNs manually", for: .normal)
-        button.addTarget(self, action: #selector(tappedAddISBNButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 200),
-            button.heightAnchor.constraint(equalToConstant: 44),
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 100),
-        ])
-
-        // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする
-        view.layoutIfNeeded()
-        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
-        barcodeCaptureSession?.startRunning()
-    }
-
-    @objc func tappedAddISBNButton() {
+    @objc func didManuallyTapped() {
         let alert = UIAlertController(title: nil, message: "Enter ISBN", preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "9784780802047"
@@ -124,16 +103,92 @@ extension ScannerViewController {
         alert.addAction(cancelAction)
         present(alert, animated: true, completion: nil)
     }
+
+    private func setupChildrenView() {
+        let barcodeView = UIView()
+        barcodeView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(barcodeView)
+        self.barcodeView = barcodeView
+
+        let lineView = UIView()
+        lineView.backgroundColor = .red.withAlphaComponent(0.5)
+        lineView.translatesAutoresizingMaskIntoConstraints = false
+        barcodeView.addSubview(lineView)
+
+        let notesView = UILabel()
+        notesView.text = String(localized: "Read the 13-digit ISBN.ISBNs begin with 978 or 979.")
+        notesView.textColor = .darkGray
+        notesView.textAlignment = .center
+        notesView.numberOfLines = 0
+        notesView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(notesView)
+
+        NSLayoutConstraint.activate([
+            barcodeView.heightAnchor.constraint(lessThanOrEqualToConstant: 500),
+            barcodeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            barcodeView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            barcodeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+
+        NSLayoutConstraint.activate([
+            lineView.heightAnchor.constraint(equalToConstant: 2),
+            lineView.leadingAnchor.constraint(equalTo: barcodeView.leadingAnchor, constant: 50),
+            lineView.trailingAnchor.constraint(equalTo: barcodeView.trailingAnchor, constant: -50),
+            lineView.topAnchor.constraint(equalTo: barcodeView.topAnchor, constant: 100),
+        ])
+
+        let bottomAnchor = notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
+        bottomAnchor.priority = .defaultLow
+        NSLayoutConstraint.activate([
+            notesView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            notesView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            notesView.topAnchor.constraint(equalTo: barcodeView.bottomAnchor, constant: 16),
+            bottomAnchor,
+        ])
+
+        // viewDidLoadでアタッチするとViewのレイアウトが変わっていないので、確定させてからアタッチする
+        view.layoutIfNeeded()
+        barcodeCaptureSession?.attachPreviewLayer(to: barcodeView)
+        barcodeCaptureSession?.startRunning()
+    }
 }
 
 extension ScannerViewController {
+    private func showCodeFrame(_ frame: CGRect) {
+        hideBarcodeFrameAnimator?.stopAnimation(true)
+        hideBarcodeFrameAnimator?.finishAnimation(at: .current)
+        barcodeFrameView?.alpha = 0
+        barcodeFrameView?.removeFromSuperview()
+
+        let frameView = UIView(frame: frame)
+        frameView.layer.borderWidth = 1.0
+        frameView.layer.borderColor = UIColor.blue.cgColor
+        barcodeView.addSubview(frameView)
+        barcodeFrameView = frameView
+
+        hideBarcodeFrameAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .easeInOut) { [weak self] in
+            self?.barcodeFrameView?.alpha = 0
+        }
+        hideBarcodeFrameAnimator?.addCompletion { [weak self] position in
+            if position != .end {
+                return
+            }
+            self?.barcodeFrameView?.removeFromSuperview()
+            self?.barcodeFrameView = nil
+        }
+        hideBarcodeFrameAnimator?.startAnimation(afterDelay: 1.0)
+    }
+
     private func showCode(_ code: String) {
         if let codeLabel {
             if let text = codeLabel.text, text == code {
                 return
             } else {
-                codeLabel.isHidden = true
+                hideCodeAnimator?.stopAnimation(true)
+                hideCodeAnimator?.finishAnimation(at: .current)
+                codeLabel.alpha = 0
                 codeLabel.removeFromSuperview()
+                self.codeLabel = nil
             }
         }
         let label = defalutCodeLabel
@@ -141,19 +196,17 @@ extension ScannerViewController {
         view.addSubview(label)
         codeLabel = label
 
-        label.alpha = 0
-        UIView.animate(withDuration: 0.3) {
-            label.alpha = 1
+        hideCodeAnimator = UIViewPropertyAnimator(duration: 1.0, curve: .easeInOut) { [weak self] in
+            self?.codeLabel?.alpha = 0
         }
-        UIView.animate(
-            withDuration: 1.0, delay: 3.0,
-            animations: {
-                label.alpha = 0
-            },
-            completion: { _ in
-                label.removeFromSuperview()
-                self.codeLabel = nil
-            })
+        hideCodeAnimator?.addCompletion { [weak self] position in
+            if position != .end {
+                return
+            }
+            self?.codeLabel?.removeFromSuperview()
+            self?.codeLabel = nil
+        }
+        hideCodeAnimator?.startAnimation(afterDelay: 3.0)
     }
 
     private var defalutCodeLabel: UILabel {
