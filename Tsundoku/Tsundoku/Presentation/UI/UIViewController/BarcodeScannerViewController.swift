@@ -43,6 +43,7 @@ extension ScannerViewController {
         viewModel.didFetchBook
             .sink { [weak self] book in
                 self?.dismiss(animated: true) { [weak self] in
+                    self?.barcodeCaptureSession?.stopRunning()
                     self?.delegate?.didFind(book: book)
                 }
             }
@@ -61,7 +62,6 @@ extension ScannerViewController {
 
         barcodeCaptureSession?.codePublisher
             .sink { [weak self] code in
-                self?.barcodeCaptureSession?.stopRunning()
                 self?.viewModel.didFind(code: code)
                 self?.showCode(code)
             }
@@ -70,10 +70,7 @@ extension ScannerViewController {
 
     private func showAlert(_ error: Error) {
         let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            guard let self else { return }
-            barcodeCaptureSession?.startRunning()
-        }
+        let action = UIAlertAction(title: "OK", style: .default)
         alert.addAction(action)
         present(alert, animated: true)
     }

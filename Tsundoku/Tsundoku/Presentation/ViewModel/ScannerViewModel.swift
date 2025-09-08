@@ -30,15 +30,17 @@ extension ScannerViewModel {
                 return
             }
             isFetching = true
+            defer { isFetching = false }
 
             do {
                 let input = GetBookInputData(isbn13: code)
                 let output = try await getBookUseCase.execute(input: input)
                 didFetchBook.send(Book(title: output.title, currentPage: output.currentPage, maxPage: output.maxPage, image: output.image))
-                isFetching = false
             } catch {
+                if let bookError = error as? GetBookError, case .invalidCode = bookError {
+                    return
+                }
                 didFailedFetchBook.send(error)
-                isFetching = false
             }
         }
     }
