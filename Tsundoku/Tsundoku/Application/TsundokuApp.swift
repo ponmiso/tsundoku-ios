@@ -20,7 +20,7 @@ struct TsundokuApp: App {
 
     var body: some Scene {
         WindowGroup {
-            BookListView()
+            BookTopView()
         }
         .modelContainer(sharedModelContainer)
     }
