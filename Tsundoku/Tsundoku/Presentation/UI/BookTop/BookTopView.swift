@@ -11,7 +11,7 @@ struct BookTopView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
 
-    @State private var presentedScreen: [Screen] = []
+    @State private var presentedScreens: [Screen] = []
     @State private var isPresentedBookAddView = false
     @State private var isbn13ForBookAddView: String?
     @State private var isPresentedDeleteBookAlert = false
@@ -19,7 +19,7 @@ struct BookTopView: View {
     @State private var searchText = ""
 
     var body: some View {
-        NavigationStack(path: $presentedScreen) {
+        NavigationStack(path: $presentedScreens) {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -200,7 +200,7 @@ extension BookTopView {
     private func coordinatorShortcutItem(_ item: ShortcutItem?) {
         switch item {
         case let .add(isbn13):
-            presentedScreen.removeAll()
+            presentedScreens.removeAll()
             showBookAddView(isbn13)
 
             shortcutActionState.setShortcutItem(from: nil)
