@@ -156,7 +156,7 @@ extension BookTopView {
     }
 
     private func moreBookButton(_ isRead: Bool) -> some View {
-        NavigationLink(value: Screen.bookList) {
+        NavigationLink(value: Screen.bookList(isRead: isRead)) {
             Text("See more")
                 .font(.body)
                 .foregroundStyle(.tint)

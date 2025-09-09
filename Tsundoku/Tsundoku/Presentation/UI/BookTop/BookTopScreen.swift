@@ -1,4 +1,4 @@
 enum BookTopScreen: Hashable {
     case bookDetail(Book)
-    case bookList
+    case bookList(isRead: Bool)
 }
