@@ -35,7 +35,7 @@ struct BookTopView: View {
                     BookTopViewRooter().coordinator(screen)
                 }
         }
-        .searchable(text: $searchText)
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         .sheet(isPresented: $isPresentedBookAddView) {
             BookAddView(isbn13: isbn13ForBookAddView)
         }

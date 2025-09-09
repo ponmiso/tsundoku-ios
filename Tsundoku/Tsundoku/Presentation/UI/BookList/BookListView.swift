@@ -48,7 +48,7 @@ struct BookListView: View {
                 }
             }
             .navigationTitle(isRead ? "Read" : "Unread")
-            .searchable(text: $searchText)
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
             .sheet(isPresented: $isPresentedBookAddView) {
                 BookAddView()
             }
