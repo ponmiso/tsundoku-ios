@@ -5,11 +5,13 @@ struct BookTopView: View {
     typealias DeletedBook = BookTopDeletedBook
     typealias Screen = BookTopScreen
 
+    private let maxVisibleBooks = 3
+
     @StateObject var shortcutActionState = ShortcutActionState.shared
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
 
-    @State private var presentedScreen: [Screen] = []
+    @State private var presentedScreens: [Screen] = []
     @State private var isPresentedBookAddView = false
     @State private var isbn13ForBookAddView: String?
     @State private var isPresentedDeleteBookAlert = false
@@ -17,7 +19,7 @@ struct BookTopView: View {
     @State private var searchText = ""
 
     var body: some View {
-        NavigationStack(path: $presentedScreen) {
+        NavigationStack(path: $presentedScreens) {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -33,7 +35,7 @@ struct BookTopView: View {
                     BookTopViewRooter().coordinator(screen)
                 }
         }
-        .searchable(text: $searchText)
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         .sheet(isPresented: $isPresentedBookAddView) {
             BookAddView(isbn13: isbn13ForBookAddView)
         }
@@ -62,7 +64,7 @@ struct BookTopView: View {
 }
 
 extension BookTopView {
-    private var searchedBooks: [Book] {
+    private var searchedBooks: ArraySlice<Book> {
         books
             .filter {
                 if !searchText.isEmpty {
@@ -71,6 +73,7 @@ extension BookTopView {
                     true
                 }
             }
+            .prefix(maxVisibleBooks)
     }
 
     private var readBooks: [Book] {
@@ -99,17 +102,18 @@ extension BookTopView {
                 }
             } else {
                 List {
-                    bookSectionView(name: "Unread", books: unreadBooks)
-                    bookSectionView(name: "Read", books: readBooks)
+                    bookSectionView(books: unreadBooks, isRead: false)
+                    bookSectionView(books: readBooks, isRead: true)
                 }
+                // .navigationLinkIndicatorVisibility(.hidden) // TODO: Xcode26で使えそう
             }
         }
     }
 }
 
 extension BookTopView {
-    private func bookSectionView(name: LocalizedStringKey, books: [Book]) -> some View {
-        Section(name) {
+    private func bookSectionView(books: [Book], isRead: Bool) -> some View {
+        Section(isRead ? "Read" : "Unread") {
             if books.isEmpty {
                 bookEmptyView()
             } else {
@@ -118,6 +122,10 @@ extension BookTopView {
                 }
                 .onDelete {
                     onDeleteBooks(at: $0, in: books)
+                }
+
+                if books.count == maxVisibleBooks {
+                    moreBookButton(isRead)
                 }
             }
         }
@@ -145,6 +153,16 @@ extension BookTopView {
             .font(.body)
             .lineLimit(1)
             .listRowBackground(Color.clear)
+    }
+
+    private func moreBookButton(_ isRead: Bool) -> some View {
+        NavigationLink(value: Screen.bookList(isRead: isRead)) {
+            Text("See more")
+                .font(.body)
+                .foregroundStyle(.tint)
+                .frame(maxWidth: .infinity)
+        }
+        .listRowBackground(Color.clear)
     }
 }
 
@@ -182,7 +200,7 @@ extension BookTopView {
     private func coordinatorShortcutItem(_ item: ShortcutItem?) {
         switch item {
         case let .add(isbn13):
-            presentedScreen.removeAll()
+            presentedScreens.removeAll()
             showBookAddView(isbn13)
 
             shortcutActionState.setShortcutItem(from: nil)
@@ -200,7 +218,9 @@ extension BookTopView {
 
         // モックデータ追加
         let context = container.mainContext
-        context.insert(Book(title: "xxx"))
+        context.insert(Book(title: "xxx1"))
+        context.insert(Book(title: "xxx2"))
+        context.insert(Book(title: "xxx3"))
 
         // コンテナを環境に渡す
         return BookTopView().modelContainer(container)

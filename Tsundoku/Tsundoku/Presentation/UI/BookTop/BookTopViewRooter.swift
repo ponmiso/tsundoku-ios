@@ -7,6 +7,8 @@ struct BookTopViewRooter {
         switch screen {
         case let .bookDetail(book):
             BookDetailsView(book)
+        case let .bookList(isRead):
+            BookListView(isRead: isRead)
         }
     }
 }
