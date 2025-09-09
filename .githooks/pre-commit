@@ -1,16 +1,28 @@
 #!/bin/bash
 
-# コミット対象Swiftファイルを取得(1行で空白区切り）
+# ステージ済みのSwiftファイルを取得(1行で空白区切り）
 stagedSwiftFiles=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.swift$')
 
 if xcrun --find swift-format >/dev/null && [ -n "$stagedSwiftFiles" ]; then
-  xcrun swift-format format --in-place $stagedSwiftFiles
+  # 対象のファイルを１件ずつフォーマットし差分を比較する
+  # 同ファイルに未ステージの行とステージ済みの行がある場合に変更なしとするため
+  for file in "${stagedSwiftFiles[@]}"; do
+    # 比較用に一時ファイルに保存
+    cp "$file" "$file"_before.swift
+    xcrun swift-format format --in-place "$file"
+    # 差分チェック
+    is_changed=0
+    if ! diff -q "$file" "$file"_before.swift >/dev/null; then
+      is_changed=1
+    fi
+    rm "$file"_before.swift
+  done
 else
   echo "⚠️ swift-format が見つかりませんでした。"
   exit 0
 fi
 
-if ! git diff --quiet -- $stagedSwiftFiles; then
+if [ "$is_changed" -eq 1 ]; then
   echo ""
   echo "✨ swift-format によりファイルが修正されました。"
   echo "変更を確認し、もう一度コミットしてください。"
