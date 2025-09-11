@@ -20,6 +20,7 @@ struct BookDetailsView: View {
     @State private var updateAlertDetails: UpdateAlertDetails?
     @State private var isPresentedPhotosPicker = false
     @State private var selectedPickerItem: PhotosPickerItem?
+    @State private var isPresentedForceSaveAlert = false
 
     init(_ book: Book) {
         self.book = book
@@ -67,6 +68,18 @@ struct BookDetailsView: View {
             Button("OK") {}
         } message: { details in
             Text(details.message)
+        }
+        .alert("", isPresented: $isPresentedForceSaveAlert) {
+            Button("Cancel") {}
+            Button("Save") {
+                Task {
+                    // アラートを表示した後、すぐにアラートを表示することができないので、遅延を入れる
+                    try? await Task.sleep(for: .seconds(0.1))
+                    updateBookWithoutImage(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
+                }
+            }
+        } message: {
+            Text("Image update failed. Do you want to save without updating the image?")
         }
         .photosPicker(isPresented: $isPresentedPhotosPicker, selection: $selectedPickerItem, matching: .images)
         .onChange(of: selectedPickerItem) { _, newValue in
@@ -140,9 +153,16 @@ extension BookDetailsView {
                     try? BookImageFileManager().removeFile(fileURL: oldURL)
                 }
             } catch {
-                // TODO: アラート表示してそのまま保存するかどうか選ばせる
+                isPresentedForceSaveAlert = true
+                return
             }
         }
+
+        updateBookWithoutImage(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
+    }
+
+    private func updateBookWithoutImage(title: String, isRead: Bool, currentPage: String, maxPage: String) {
+        if title.isEmpty || isOverPage { return }
 
         book.title = title
         book.isRead = isRead
