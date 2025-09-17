@@ -59,6 +59,14 @@ struct BookAddView: View {
         } message: { reason in
             Text(reason.error.localizedDescription)
         }
+        .alert("", isPresented: $viewModel.isPresentedForceSaveAlert) {
+            Button("Cancel") {}
+            Button("Save") {
+                viewModel.onTapForceSave(context: modelContext)
+            }
+        } message: {
+            Text("Image update failed. Do you want to save without updating the image?")
+        }
         .onChange(of: viewModel.selectedPickerItem) { _, newValue in
             viewModel.onChangePhotosPickerItem(newValue)
         }

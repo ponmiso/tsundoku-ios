@@ -123,6 +123,17 @@
         }
       }
     },
+    "Image update failed. Do you want to save without updating the image?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像の更新に失敗しました。画像を更新せずに保存しますか？"
+          }
+        }
+      }
+    },
     "Manually" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -237,8 +248,19 @@
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "13桁のISBNを読み取ってください。\nISBNは978か979始まりです。"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存する"
           }
         }
       }
