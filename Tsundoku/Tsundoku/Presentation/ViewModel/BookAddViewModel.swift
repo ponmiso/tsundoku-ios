@@ -24,6 +24,7 @@ final class BookAddViewModel: ObservableObject {
     @Published var selectedPickerItem: PhotosPickerItem?
     @Published var isPresentedFetchBookErrorAlert = false
     @Published var fetchBookErrorReason: FetchBookErrorReason?
+    @Published var isPresentedForceSaveAlert = false
 
     @Published var actionPublisher: PassthroughSubject<Action, Never> = .init()
 
@@ -48,6 +49,14 @@ extension BookAddViewModel {
 
     func onTapThumbnail() {
         isPresentedPhotosPicker = true
+    }
+
+    func onTapForceSave(context: ModelContext) {
+        Task {
+            // アラートを表示した後、すぐにアラートを表示することができないので、遅延を入れる
+            try? await Task.sleep(for: .seconds(0.1))
+            addBook(context: context, title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage, image: nil)
+        }
     }
 
     func task() async {
@@ -91,8 +100,8 @@ extension BookAddViewModel {
                 let newURL = try BookImageFileManager().moveToFile(from: url)
                 newImage = BookImage.filePath(newURL)
             } catch {
-                // TODO: アラート表示してそのまま保存するかどうか選ばせる
-                newImage = nil
+                isPresentedForceSaveAlert = true
+                return
             }
         } else {
             newImage = nil
