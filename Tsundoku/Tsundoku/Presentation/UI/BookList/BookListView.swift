@@ -48,7 +48,7 @@ struct BookListView: View {
                 }
             }
             .navigationTitle(isRead ? "Read" : "Unread")
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+            .searchable(text: $searchText)
             .sheet(isPresented: $isPresentedBookAddView) {
                 BookAddView()
             }
@@ -167,6 +167,10 @@ extension BookListView {
         context.insert(Book(title: "xxx1"))
         context.insert(Book(title: "xxx2"))
         context.insert(Book(title: "xxx3"))
+        context.insert(Book(title: "xxx4"))
+        context.insert(Book(title: "xxx5"))
+        context.insert(Book(title: "xxx6"))
+        context.insert(Book(title: "xxx7"))
 
         // コンテナを環境に渡す
         return NavigationStack {
