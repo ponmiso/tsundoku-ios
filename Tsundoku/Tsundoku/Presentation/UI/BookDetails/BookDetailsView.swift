@@ -237,6 +237,8 @@ struct UpdateAlertDetails: Identifiable {
 
 #Preview {
     let book = Book(title: "Test Book")
-    return BookDetailsView(book)
-        .modelContainer(for: Book.self, inMemory: true)
+    return NavigationStack {
+        BookDetailsView(book)
+            .modelContainer(for: Book.self, inMemory: true)
+    }
 }

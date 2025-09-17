@@ -41,7 +41,7 @@ struct BookListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: onAddBook) {
                         Label("Add Book", systemImage: "plus")
                     }
