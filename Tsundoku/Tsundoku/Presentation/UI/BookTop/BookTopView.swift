@@ -22,7 +22,7 @@ struct BookTopView: View {
         NavigationStack(path: $presentedScreens) {
             contentView()
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         EditButton()
                     }
                     ToolbarItem {
@@ -189,7 +189,7 @@ extension BookTopView {
                 modelContext.delete(deleteBook.books[index])
 
                 // 削除に失敗しても動作に影響がないのでエラーは無視
-                if let bookImage, case let .filePath(url) = bookImage {
+                if let bookImage, case .filePath(let url) = bookImage {
                     try? BookImageFileManager().removeFile(fileURL: url)
                 }
             }
@@ -199,7 +199,7 @@ extension BookTopView {
 
     private func coordinatorShortcutItem(_ item: ShortcutItem?) {
         switch item {
-        case let .add(isbn13):
+        case .add(let isbn13):
             presentedScreens.removeAll()
             showBookAddView(isbn13)
 

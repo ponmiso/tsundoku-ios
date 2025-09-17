@@ -38,7 +38,7 @@ struct BookListView: View {
     var body: some View {
         contentView()
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
@@ -147,7 +147,7 @@ extension BookListView {
                 modelContext.delete(deleteBook.books[index])
 
                 // 削除に失敗しても動作に影響がないのでエラーは無視
-                if let bookImage, case let .filePath(url) = bookImage {
+                if let bookImage, case .filePath(let url) = bookImage {
                     try? BookImageFileManager().removeFile(fileURL: url)
                 }
             }

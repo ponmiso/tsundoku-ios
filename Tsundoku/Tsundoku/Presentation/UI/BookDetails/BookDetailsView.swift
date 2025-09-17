@@ -58,7 +58,7 @@ struct BookDetailsView: View {
         }
         .padding()
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("Update") {
                     updateBook(title: title, isRead: isRead, currentPage: currentPage, maxPage: maxPage)
                 }
@@ -139,7 +139,7 @@ extension BookDetailsView {
         if title.isEmpty || isOverPage { return }
 
         // 画像が変更されている場合は画像を更新する
-        if isChangedImage, let image, case let .filePath(url) = image {
+        if isChangedImage, let image, case .filePath(let url) = image {
             // 事前に古い画像パスを保持しておき、後で削除する
             let oldBookImage = book.image
 
@@ -148,7 +148,7 @@ extension BookDetailsView {
                 book.image = BookImage.filePath(newURL)
 
                 // 古い画像を削除する
-                if case let .filePath(oldURL) = oldBookImage {
+                if case .filePath(let oldURL) = oldBookImage {
                     // 削除に失敗しても動作に影響がないのでエラーは無視
                     try? BookImageFileManager().removeFile(fileURL: oldURL)
                 }
@@ -201,7 +201,7 @@ extension BookDetailsView {
 
     private var isChangedImage: Bool {
         return switch (image, book.image) {
-        case let (image1?, image2?):
+        case (let image1?, let image2?):
             image1 != image2
         case (nil, nil):
             false

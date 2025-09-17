@@ -35,12 +35,12 @@ struct BookAddView: View {
                         viewModel.onTapScanner()
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("Add") {
                         viewModel.onTapAdd(context: modelContext)
                     }
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         viewModel.onTapCancel()
                     }
