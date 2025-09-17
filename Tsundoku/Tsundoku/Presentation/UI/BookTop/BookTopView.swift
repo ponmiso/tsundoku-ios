@@ -64,7 +64,7 @@ struct BookTopView: View {
 }
 
 extension BookTopView {
-    private var searchedBooks: ArraySlice<Book> {
+    private var searchedBooks: [Book] {
         books
             .filter {
                 if !searchText.isEmpty {
@@ -73,15 +73,20 @@ extension BookTopView {
                     true
                 }
             }
-            .prefix(maxVisibleBooks)
     }
 
     private var readBooks: [Book] {
-        searchedBooks.filter(\.isRead)
+        searchedBooks
+            .filter(\.isRead)
+            .prefix(maxVisibleBooks)
+            .toArray()
     }
 
     private var unreadBooks: [Book] {
-        searchedBooks.filter(\.isUnread)
+        searchedBooks
+            .filter(\.isUnread)
+            .prefix(maxVisibleBooks)
+            .toArray()
     }
 }
 
@@ -221,6 +226,9 @@ extension BookTopView {
         context.insert(Book(title: "xxx1"))
         context.insert(Book(title: "xxx2"))
         context.insert(Book(title: "xxx3"))
+        context.insert(Book(title: "zzz1", isRead: true))
+        context.insert(Book(title: "zzz2", isRead: true))
+        context.insert(Book(title: "zzz3", isRead: true))
 
         // コンテナを環境に渡す
         return BookTopView().modelContainer(container)
