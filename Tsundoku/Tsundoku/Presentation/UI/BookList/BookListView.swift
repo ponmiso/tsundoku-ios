@@ -38,17 +38,17 @@ struct BookListView: View {
     var body: some View {
         contentView()
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: onAddBook) {
                         Label("Add Book", systemImage: "plus")
                     }
                 }
             }
             .navigationTitle(isRead ? "Read" : "Unread")
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+            .searchable(text: $searchText)
             .sheet(isPresented: $isPresentedBookAddView) {
                 BookAddView()
             }
@@ -147,7 +147,7 @@ extension BookListView {
                 modelContext.delete(deleteBook.books[index])
 
                 // 削除に失敗しても動作に影響がないのでエラーは無視
-                if let bookImage, case let .filePath(url) = bookImage {
+                if let bookImage, case .filePath(let url) = bookImage {
                     try? BookImageFileManager().removeFile(fileURL: url)
                 }
             }
@@ -167,6 +167,10 @@ extension BookListView {
         context.insert(Book(title: "xxx1"))
         context.insert(Book(title: "xxx2"))
         context.insert(Book(title: "xxx3"))
+        context.insert(Book(title: "xxx4"))
+        context.insert(Book(title: "xxx5"))
+        context.insert(Book(title: "xxx6"))
+        context.insert(Book(title: "xxx7"))
 
         // コンテナを環境に渡す
         return NavigationStack {

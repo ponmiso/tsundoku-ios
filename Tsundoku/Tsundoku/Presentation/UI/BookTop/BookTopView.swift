@@ -22,10 +22,10 @@ struct BookTopView: View {
         NavigationStack(path: $presentedScreens) {
             contentView()
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         EditButton()
                     }
-                    ToolbarItem {
+                    ToolbarItem(placement: .primaryAction) {
                         Button(action: onAddBook) {
                             Label("Add Book", systemImage: "plus")
                         }
@@ -35,7 +35,7 @@ struct BookTopView: View {
                     BookTopViewRooter().coordinator(screen)
                 }
         }
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(text: $searchText)
         .sheet(isPresented: $isPresentedBookAddView) {
             BookAddView(isbn13: isbn13ForBookAddView)
         }
@@ -64,7 +64,7 @@ struct BookTopView: View {
 }
 
 extension BookTopView {
-    private var searchedBooks: ArraySlice<Book> {
+    private var searchedBooks: [Book] {
         books
             .filter {
                 if !searchText.isEmpty {
@@ -73,15 +73,20 @@ extension BookTopView {
                     true
                 }
             }
-            .prefix(maxVisibleBooks)
     }
 
     private var readBooks: [Book] {
-        searchedBooks.filter(\.isRead)
+        searchedBooks
+            .filter(\.isRead)
+            .prefix(maxVisibleBooks)
+            .toArray()
     }
 
     private var unreadBooks: [Book] {
-        searchedBooks.filter(\.isUnread)
+        searchedBooks
+            .filter(\.isUnread)
+            .prefix(maxVisibleBooks)
+            .toArray()
     }
 }
 
@@ -105,7 +110,7 @@ extension BookTopView {
                     bookSectionView(books: unreadBooks, isRead: false)
                     bookSectionView(books: readBooks, isRead: true)
                 }
-                // .navigationLinkIndicatorVisibility(.hidden) // TODO: Xcode26で使えそう
+                // .navigationLinkIndicatorVisibility(.hidden) // TODO: サポートOSバージョンが26以上なら使える
             }
         }
     }
@@ -113,20 +118,24 @@ extension BookTopView {
 
 extension BookTopView {
     private func bookSectionView(books: [Book], isRead: Bool) -> some View {
-        Section(isRead ? "Read" : "Unread") {
+        Section {
             if books.isEmpty {
                 bookEmptyView()
             } else {
-                ForEach(books) { book in
-                    bookView(book)
+                Group {
+                    ForEach(books) { book in
+                        bookView(book)
+                    }
+                    .onDelete {
+                        onDeleteBooks(at: $0, in: books)
+                    }
                 }
-                .onDelete {
-                    onDeleteBooks(at: $0, in: books)
-                }
-
-                if books.count == maxVisibleBooks {
-                    moreBookButton(isRead)
-                }
+            }
+        } header: {
+            Text(isRead ? "Read" : "Unread")
+        } footer: {
+            if books.count == maxVisibleBooks {
+                moreBookButton(isRead)
             }
         }
     }
@@ -162,6 +171,7 @@ extension BookTopView {
                 .foregroundStyle(.tint)
                 .frame(maxWidth: .infinity)
         }
+        .frame(height: 44)
         .listRowBackground(Color.clear)
     }
 }
@@ -189,7 +199,7 @@ extension BookTopView {
                 modelContext.delete(deleteBook.books[index])
 
                 // 削除に失敗しても動作に影響がないのでエラーは無視
-                if let bookImage, case let .filePath(url) = bookImage {
+                if let bookImage, case .filePath(let url) = bookImage {
                     try? BookImageFileManager().removeFile(fileURL: url)
                 }
             }
@@ -199,7 +209,7 @@ extension BookTopView {
 
     private func coordinatorShortcutItem(_ item: ShortcutItem?) {
         switch item {
-        case let .add(isbn13):
+        case .add(let isbn13):
             presentedScreens.removeAll()
             showBookAddView(isbn13)
 
@@ -221,7 +231,22 @@ extension BookTopView {
         context.insert(Book(title: "xxx1"))
         context.insert(Book(title: "xxx2"))
         context.insert(Book(title: "xxx3"))
+        context.insert(Book(title: "zzz1", isRead: true))
+        context.insert(Book(title: "zzz2", isRead: true))
+        context.insert(Book(title: "zzz3", isRead: true))
 
+        // コンテナを環境に渡す
+        return BookTopView().modelContainer(container)
+    } catch {
+        return Text("プレビュー生成エラー: \(error.localizedDescription)")
+    }
+}
+
+#Preview {
+    do {
+        // モック用の設定（inMemory: trueでオンメモリDB）
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Book.self, configurations: config)
         // コンテナを環境に渡す
         return BookTopView().modelContainer(container)
     } catch {

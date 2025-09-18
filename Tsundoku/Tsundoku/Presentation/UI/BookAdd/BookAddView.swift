@@ -30,19 +30,22 @@ struct BookAddView: View {
             }
             .padding()
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        viewModel.onTapCancel()
+                    }
+                }
+                ToolbarItem {
                     Button("", systemImage: "barcode") {
                         viewModel.onTapScanner()
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                ToolbarItem {
                     Button("Add") {
                         viewModel.onTapAdd(context: modelContext)
-                    }
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        viewModel.onTapCancel()
                     }
                 }
             }
