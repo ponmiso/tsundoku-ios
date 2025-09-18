@@ -110,7 +110,7 @@ extension BookTopView {
                     bookSectionView(books: unreadBooks, isRead: false)
                     bookSectionView(books: readBooks, isRead: true)
                 }
-                // .navigationLinkIndicatorVisibility(.hidden) // TODO: Xcode26で使えそう
+                // .navigationLinkIndicatorVisibility(.hidden) // TODO: サポートOSバージョンが26以上なら使える
             }
         }
     }
