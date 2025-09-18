@@ -236,3 +236,15 @@ extension BookTopView {
         return Text("プレビュー生成エラー: \(error.localizedDescription)")
     }
 }
+
+#Preview {
+    do {
+        // モック用の設定（inMemory: trueでオンメモリDB）
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Book.self, configurations: config)
+        // コンテナを環境に渡す
+        return BookTopView().modelContainer(container)
+    } catch {
+        return Text("プレビュー生成エラー: \(error.localizedDescription)")
+    }
+}
