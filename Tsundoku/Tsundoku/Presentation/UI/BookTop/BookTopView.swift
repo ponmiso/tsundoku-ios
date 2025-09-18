@@ -118,20 +118,24 @@ extension BookTopView {
 
 extension BookTopView {
     private func bookSectionView(books: [Book], isRead: Bool) -> some View {
-        Section(isRead ? "Read" : "Unread") {
+        Section {
             if books.isEmpty {
                 bookEmptyView()
             } else {
-                ForEach(books) { book in
-                    bookView(book)
+                Group {
+                    ForEach(books) { book in
+                        bookView(book)
+                    }
+                    .onDelete {
+                        onDeleteBooks(at: $0, in: books)
+                    }
                 }
-                .onDelete {
-                    onDeleteBooks(at: $0, in: books)
-                }
-
-                if books.count == maxVisibleBooks {
-                    moreBookButton(isRead)
-                }
+            }
+        } header: {
+            Text(isRead ? "Read" : "Unread")
+        } footer: {
+            if books.count == maxVisibleBooks {
+                moreBookButton(isRead)
             }
         }
     }
@@ -167,6 +171,7 @@ extension BookTopView {
                 .foregroundStyle(.tint)
                 .frame(maxWidth: .infinity)
         }
+        .frame(height: 44)
         .listRowBackground(Color.clear)
     }
 }
