@@ -50,8 +50,8 @@ struct UnreadWidget: Widget {
             UnreadWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("未読本の把握")
-        .description("未読本の進捗状況が確認できます。")
+        .configurationDisplayName(.trackingUnreadBooks)
+        .description(.youCanCheckTheProgressOfYourUnreadBooks)
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
