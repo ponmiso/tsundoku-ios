@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		847FA9152E83D46200100378 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 847FA9142E83D46200100378 /* WidgetKit.framework */; };
+		847FA9172E83D46200100378 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 847FA9162E83D46200100378 /* SwiftUI.framework */; };
+		847FA9262E83D46300100378 /* TsundokuWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 847FA9122E83D46200100378 /* TsundokuWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		84F406172E2F7D910034978E /* OpenAPIURLSession in Frameworks */ = {isa = PBXBuildFile; productRef = 84F406162E2F7D910034978E /* OpenAPIURLSession */; };
 		84F4061A2E2F7D9C0034978E /* OpenAPIRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 84F406192E2F7D9C0034978E /* OpenAPIRuntime */; };
 /* End PBXBuildFile section */
@@ -26,12 +29,36 @@
 			remoteGlobalIDString = 45D37C512D7FEE42009FD80D;
 			remoteInfo = Tsundoku;
 		};
+		847FA9242E83D46300100378 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45D37C4A2D7FEE42009FD80D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 847FA9112E83D46200100378;
+			remoteInfo = TsundokuWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		847FA9272E83D46300100378 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				847FA9262E83D46300100378 /* TsundokuWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		45D37C522D7FEE42009FD80D /* Tsundoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tsundoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D37C642D7FEE45009FD80D /* TsundokuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TsundokuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D37C6E2D7FEE46009FD80D /* TsundokuUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TsundokuUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		847FA9122E83D46200100378 /* TsundokuWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TsundokuWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		847FA9142E83D46200100378 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		847FA9162E83D46200100378 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		84872A192E50D6CB00630046 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -42,6 +69,13 @@
 				Application/Info.plist,
 			);
 			target = 45D37C512D7FEE42009FD80D /* Tsundoku */;
+		};
+		847FA92B2E83D46300100378 /* Exceptions for "TsundokuWidget" folder in "TsundokuWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 847FA9112E83D46200100378 /* TsundokuWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -62,6 +96,14 @@
 		45D37C712D7FEE46009FD80D /* TsundokuUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = TsundokuUITests;
+			sourceTree = "<group>";
+		};
+		847FA9182E83D46200100378 /* TsundokuWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				847FA92B2E83D46300100378 /* Exceptions for "TsundokuWidget" folder in "TsundokuWidgetExtension" target */,
+			);
+			path = TsundokuWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -90,6 +132,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		847FA90F2E83D46200100378 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				847FA9172E83D46200100378 /* SwiftUI.framework in Frameworks */,
+				847FA9152E83D46200100378 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -100,6 +151,8 @@
 				45D37C542D7FEE42009FD80D /* Tsundoku */,
 				45D37C672D7FEE45009FD80D /* TsundokuTests */,
 				45D37C712D7FEE46009FD80D /* TsundokuUITests */,
+				847FA9182E83D46200100378 /* TsundokuWidget */,
+				847FA9132E83D46200100378 /* Frameworks */,
 				45D37C532D7FEE42009FD80D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,8 +163,18 @@
 				45D37C522D7FEE42009FD80D /* Tsundoku.app */,
 				45D37C642D7FEE45009FD80D /* TsundokuTests.xctest */,
 				45D37C6E2D7FEE46009FD80D /* TsundokuUITests.xctest */,
+				847FA9122E83D46200100378 /* TsundokuWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		847FA9132E83D46200100378 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				847FA9142E83D46200100378 /* WidgetKit.framework */,
+				847FA9162E83D46200100378 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		84872A142E50D68A00630046 /* ci_scripts */ = {
@@ -133,11 +196,13 @@
 				45D37C4E2D7FEE42009FD80D /* Sources */,
 				45D37C4F2D7FEE42009FD80D /* Frameworks */,
 				45D37C502D7FEE42009FD80D /* Resources */,
+				847FA9272E83D46300100378 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				84F406822E2F862C0034978E /* PBXTargetDependency */,
+				847FA9252E83D46300100378 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				45D37C542D7FEE42009FD80D /* Tsundoku */,
@@ -197,6 +262,28 @@
 			productReference = 45D37C6E2D7FEE46009FD80D /* TsundokuUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		847FA9112E83D46200100378 /* TsundokuWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 847FA92A2E83D46300100378 /* Build configuration list for PBXNativeTarget "TsundokuWidgetExtension" */;
+			buildPhases = (
+				847FA90E2E83D46200100378 /* Sources */,
+				847FA90F2E83D46200100378 /* Frameworks */,
+				847FA9102E83D46200100378 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				847FA9182E83D46200100378 /* TsundokuWidget */,
+			);
+			name = TsundokuWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = TsundokuWidgetExtension;
+			productReference = 847FA9122E83D46200100378 /* TsundokuWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -204,7 +291,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					45D37C512D7FEE42009FD80D = {
@@ -217,6 +304,9 @@
 					45D37C6D2D7FEE46009FD80D = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 45D37C512D7FEE42009FD80D;
+					};
+					847FA9112E83D46200100378 = {
+						CreatedOnToolsVersion = 26.0;
 					};
 				};
 			};
@@ -243,6 +333,7 @@
 				45D37C512D7FEE42009FD80D /* Tsundoku */,
 				45D37C632D7FEE45009FD80D /* TsundokuTests */,
 				45D37C6D2D7FEE46009FD80D /* TsundokuUITests */,
+				847FA9112E83D46200100378 /* TsundokuWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -263,6 +354,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		45D37C6C2D7FEE46009FD80D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		847FA9102E83D46200100378 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -315,6 +413,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		847FA90E2E83D46200100378 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -327,6 +432,11 @@
 			isa = PBXTargetDependency;
 			target = 45D37C512D7FEE42009FD80D /* Tsundoku */;
 			targetProxy = 45D37C6F2D7FEE46009FD80D /* PBXContainerItemProxy */;
+		};
+		847FA9252E83D46300100378 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 847FA9112E83D46200100378 /* TsundokuWidgetExtension */;
+			targetProxy = 847FA9242E83D46300100378 /* PBXContainerItemProxy */;
 		};
 		84F406822E2F862C0034978E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -596,6 +706,66 @@
 			};
 			name = Release;
 		};
+		847FA9282E83D46300100378 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TsundokuWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TsundokuWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.ponmiso.Tsundoku.TsundokuWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		847FA9292E83D46300100378 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TsundokuWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TsundokuWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.ponmiso.Tsundoku.TsundokuWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -631,6 +801,15 @@
 			buildConfigurations = (
 				45D37C7F2D7FEE46009FD80D /* Debug */,
 				45D37C802D7FEE46009FD80D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		847FA92A2E83D46300100378 /* Build configuration list for PBXNativeTarget "TsundokuWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				847FA9282E83D46300100378 /* Debug */,
+				847FA9292E83D46300100378 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
