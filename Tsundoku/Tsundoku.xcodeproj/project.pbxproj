@@ -78,6 +78,18 @@
 			);
 			target = 847FA9112E83D46200100378 /* TsundokuWidgetExtension */;
 		};
+		847FA9E02E856C0D00100378 /* Exceptions for "Tsundoku" folder in "TsundokuWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Domain/Manager/BookImageFileManager.swift,
+				Domain/Manager/JSONEncodeManager.swift,
+				Domain/Manager/UserDefaultsManager.swift,
+				Domain/Model/Book.swift,
+				Domain/Model/BookImage.swift,
+				Domain/Model/BookProgress.swift,
+			);
+			target = 847FA9112E83D46200100378 /* TsundokuWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,6 +97,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				8456EFA62E30C18C000FB516 /* Exceptions for "Tsundoku" folder in "Tsundoku" target */,
+				847FA9E02E856C0D00100378 /* Exceptions for "Tsundoku" folder in "TsundokuWidgetExtension" target */,
 			);
 			path = Tsundoku;
 			sourceTree = "<group>";
