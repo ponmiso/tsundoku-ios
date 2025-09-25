@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct BookTopView: View {
     typealias DeletedBook = BookTopDeletedBook
@@ -67,6 +68,8 @@ struct BookTopView: View {
             }
             let books = unreadBooks.map(CodableBook.init)
             UserDefaultsManager(userDefaults: userDefaults).save(key: .unreadBooks, value: books)
+
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 }

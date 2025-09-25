@@ -9,11 +9,11 @@ struct UserDefaultsManager {
 
     func save<T>(key: UserDefaultsKey, value: T) where T: Encodable {
         let endodedValue = JSONEncodeManager().encode(value)
-        UserDefaults.standard.set(endodedValue, forKey: key.rawValue)
+        userDefaults.set(endodedValue, forKey: key.rawValue)
     }
 
     func load(_ key: UserDefaultsKey) -> Any? {
-        guard let endodedValue = UserDefaults.standard.string(forKey: key.rawValue) else {
+        guard let endodedValue = userDefaults.string(forKey: key.rawValue) else {
             return nil
         }
         return JSONEncodeManager().decode(key.valueType, from: endodedValue)
