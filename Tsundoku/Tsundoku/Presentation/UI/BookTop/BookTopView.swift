@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct BookTopView: View {
     typealias DeletedBook = BookTopDeletedBook
@@ -7,6 +8,7 @@ struct BookTopView: View {
 
     private let maxVisibleBooks = 3
 
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject var shortcutActionState = ShortcutActionState.shared
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Book.updated, order: .reverse) private var books: [Book]
@@ -59,6 +61,15 @@ struct BookTopView: View {
         }
         .onChange(of: shortcutActionState.shortcutItem) {
             coordinatorShortcutItem(shortcutActionState.shortcutItem)
+        }
+        .onChange(of: scenePhase) { _, newValue in
+            guard newValue == .background, let userDefaults = UserDefaultsManager.appGroupsUserDefaults else {
+                return
+            }
+            let books = unreadBooks.map(CodableBook.init)
+            UserDefaultsManager(userDefaults: userDefaults).save(key: .unreadBooks, value: books)
+
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 }

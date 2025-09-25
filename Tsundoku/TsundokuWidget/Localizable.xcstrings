@@ -1,0 +1,50 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "I have no unread books." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未読本がありません。"
+          }
+        }
+      }
+    },
+    "Progress on Unread Books" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未読本の進捗"
+          }
+        }
+      }
+    },
+    "Tracking Unread Books" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未読本の把握"
+          }
+        }
+      }
+    },
+    "You can check the progress of your unread books." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未読本の進捗状況が確認できます。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}
