@@ -59,7 +59,6 @@
 		847FA9122E83D46200100378 /* TsundokuWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TsundokuWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		847FA9142E83D46200100378 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		847FA9162E83D46200100378 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		847FA9BA2E83EC2900100378 /* TsundokuWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TsundokuWidgetExtension.entitlements; sourceTree = "<group>"; };
 		84872A192E50D6CB00630046 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,7 +160,6 @@
 		45D37C492D7FEE42009FD80D = {
 			isa = PBXGroup;
 			children = (
-				847FA9BA2E83EC2900100378 /* TsundokuWidgetExtension.entitlements */,
 				84872A142E50D68A00630046 /* ci_scripts */,
 				45D37C542D7FEE42009FD80D /* Tsundoku */,
 				45D37C672D7FEE45009FD80D /* TsundokuTests */,
@@ -728,7 +726,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = TsundokuWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TsundokuWidget/TsundokuWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -759,7 +757,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = TsundokuWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TsundokuWidget/TsundokuWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
