@@ -74,7 +74,7 @@ struct UnreadWidgetEntryView: View {
     }
 
     private func booksView() -> some View {
-        ForEach(entry.books.prefix(maxVisibleBooks).enumerated(), id: \.offset) { offset, book in
+        ForEach(Array(entry.books.prefix(maxVisibleBooks).enumerated()), id: \.offset) { offset, book in
             ZStack(alignment: .bottom) {
                 bookView(book)
                     .frame(maxHeight: .infinity, alignment: .center)
