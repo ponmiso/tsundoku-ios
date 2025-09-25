@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Book {
+final class Book: BookProgress {
     /// タイトル
     var title: String
     /// 既読か
@@ -33,32 +33,10 @@ extension Book {
     var isUnread: Bool {
         !isRead
     }
-
-    var progressText: String {
-        if let progress, !isOverPage {
-            "\(Int(progress * 100)) %"
-        } else {
-            "---"
-        }
-    }
-
-    private var progress: Double? {
-        guard let currentPage, let maxPage, maxPage > 0 else {
-            return nil
-        }
-        return Double(currentPage) / Double(maxPage)
-    }
-
-    private var isOverPage: Bool {
-        guard let currentPage, let maxPage else {
-            return false
-        }
-        return currentPage > maxPage
-    }
 }
 
 /// SwiftDataのModelはCodableに準拠しない方が良いので、同じ構造の構造体を用意する
-struct CodableBook: Codable {
+struct CodableBook: Codable, BookProgress {
     /// タイトル
     let title: String
     /// 既読か
