@@ -3,41 +3,106 @@ import WidgetKit
 
 struct UnreadProvider: TimelineProvider {
     func placeholder(in context: Context) -> UnreadWidgetEntry {
-        UnreadWidgetEntry(date: .now, configuration: "placeholder")
+        UnreadWidgetEntry(date: .now, books: placeholderBooks)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (UnreadWidgetEntry) -> Void) {
-        // TODO: 実際のデータを注入する
-        let entry = UnreadWidgetEntry(date: .now, configuration: "getSnapshot")
+        let entry = UnreadWidgetEntry(date: .now, books: unreadBooks)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<UnreadWidgetEntry>) -> Void) {
-        // TODO: 実際のデータを注入する
-        let entry = UnreadWidgetEntry(date: .now, configuration: "getTimeline")
+        let entry = UnreadWidgetEntry(date: .now, books: unreadBooks)
         let next = Calendar.current.date(byAdding: .hour, value: 6, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(next)))
     }
 }
 
-struct UnreadWidgetEntry: TimelineEntry {
-    let date: Date
-    let configuration: String  // TODO: 実際のデータにする
+extension UnreadProvider {
+    private var placeholderBooks: [CodableBook] {
+        [
+            CodableBook(title: "Harry Potter", isRead: false),
+            CodableBook(title: "ONE PIECE 1", isRead: false),
+            CodableBook(title: "パンどろぼう", isRead: false),
+        ]
+    }
+
+    private var unreadBooks: [CodableBook] {
+        if let userDefaults = UserDefaultsManager.appGroupsUserDefaults,
+            let unreadBooks = UserDefaultsManager(userDefaults: userDefaults).load(.unreadBooks),
+            let _unreadBooks = unreadBooks as? [CodableBook]
+        {
+            _unreadBooks
+        } else {
+            []
+        }
+    }
 }
 
-// TODO: 実際のデータにする
+struct UnreadWidgetEntry: TimelineEntry {
+    let date: Date
+    let books: [CodableBook]
+}
+
 // TODO: サイズに合わせてViewを変更する
 struct UnreadWidgetEntryView: View {
+    private let maxVisibleBooks = 3
+
     @Environment(\.widgetFamily) var family: WidgetFamily
     var entry: UnreadProvider.Entry
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
+        VStack(alignment: .leading, spacing: 0) {
+            Text(.progressOnUnreadBooks)
+                .font(.headline)
+                .padding(.bottom, 8)
+            if entry.books.isEmpty {
+                bookEmptyView()
+                Spacer()
+            } else {
+                booksView()
+                bookDummyView()
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
-            Text("func:")
-            Text(entry.configuration)
+    private func bookEmptyView() -> some View {
+        Text(.iHaveNoUnreadBooks)
+            .font(.body)
+            .foregroundColor(.secondary)
+    }
+
+    private func booksView() -> some View {
+        ForEach(entry.books.prefix(maxVisibleBooks).enumerated(), id: \.offset) { offset, book in
+            ZStack(alignment: .bottom) {
+                bookView(book)
+                    .frame(maxHeight: .infinity, alignment: .center)
+                Divider()
+            }
+        }
+    }
+
+    private func bookView(_ book: CodableBook) -> some View {
+        HStack {
+            Text(book.title)
+                .font(.caption)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(book.progressText)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private func bookDummyView() -> some View {
+        if entry.books.count < maxVisibleBooks {
+            let dummyViewCount = maxVisibleBooks - entry.books.count
+            ForEach(0..<dummyViewCount, id: \.self) { _ in
+                Color.clear
+            }
+        } else {
+            EmptyView()
         }
     }
 }
@@ -59,5 +124,11 @@ struct UnreadWidget: Widget {
 #Preview(as: .systemSmall) {
     UnreadWidget()
 } timeline: {
-    UnreadWidgetEntry(date: .now, configuration: "hoge")
+    let books = [
+        CodableBook(title: "Harry Potter", currentPage: 10, maxPage: 100),
+        CodableBook(title: "ONE PIECE 1"),
+        CodableBook(title: "パンどろぼう"),
+    ]
+    UnreadWidgetEntry(date: .now, books: books)
+    UnreadWidgetEntry(date: .now, books: [])
 }
